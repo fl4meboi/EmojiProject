@@ -24,11 +24,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	float TargetHeight = 1100.f;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float FloatSpeed = 90.f;
+	float FloatSpeed = 200.f;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float SwayAmount = 5.f;
+	float SwayAmount = 3.5f;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float SwaySpeed = 5.f;
+	float SwaySpeed = 4.f;
 	
 protected:
 	// Called when the game starts or when spawned

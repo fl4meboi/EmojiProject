@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "EmojiManager.h"
 #include "GameFramework/PlayerController.h"
+// #include "EnhancedInputComponent.h"
 #include "EmojiPlayerController.generated.h"
 
 /**
@@ -16,13 +17,14 @@ class EMOJIPROJECT_API AEmojiPlayerController : public APlayerController
 	GENERATED_BODY()
 
 protected:
+	// void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 	virtual void SetupInputComponent() override;
 
 private:
 	AEmojiManager* EmojiManager;
 
 	// UPROPERTY(EditAnywhere)
-	// class UInputAction* IE_Spawn;
+	// UInputAction* IE_Spawn;
 
 	void SpawnEmoji();
 	
