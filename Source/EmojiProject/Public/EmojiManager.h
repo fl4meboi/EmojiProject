@@ -21,6 +21,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	// void SpawnEmojiAtLocation(const FVector& SpawnLocation);
 	void SpawnEmoji();
+	UFUNCTION(BlueprintCallable, Category = "Emoji")
+	void RemoveAllEmoji();
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,6 +38,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Emoji")
 	TSubclassOf<class AEmojiActor> EmojiActorClass;
+
+private:
+	TArray<AEmojiActor*> EmojiArray;
 };
 
 

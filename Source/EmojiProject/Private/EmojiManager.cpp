@@ -45,10 +45,20 @@ void AEmojiManager::SpawnEmoji()
 	{
 		// Randomly select an emoji type
 		int32 Index = FMath::RandRange(0, EmojiTypes.Num() - 1);
-		// FVector SpawnLocation = (FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint);
-		FVector SpawnLocation = RightSpawnPoint;
+		FVector SpawnLocation = (FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint);
+		// FVector SpawnLocation = RightSpawnPoint;
 
 		// Spawn emoji
 		GetWorld()->SpawnActor<AEmojiActor>(EmojiTypes[Index], SpawnLocation, FRotator::ZeroRotator);
 	}
+	
+}
+
+void AEmojiManager::RemoveAllEmoji()
+{
+	for (int i = 0; i < EmojiArray.Num(); ++i)
+	{
+		EmojiArray[i]->Destroy();
+	}
+	EmojiArray.Empty();
 }

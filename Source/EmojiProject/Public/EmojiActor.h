@@ -22,13 +22,13 @@ public:
 	// UPaperFlipbookComponent* FlipbookComponent;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float TargetHeight = 1100.f;
+	float TargetHeight = 1300.f;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float FloatSpeed = 200.f;
+	float FloatSpeed = 400.f;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float SwayAmount = 3.5f;
+	float SwayAmount = 2.f;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float SwaySpeed = 4.f;
+	float SwaySpeed = 2.f;
 	
 protected:
 	// Called when the game starts or when spawned
