@@ -16,6 +16,13 @@ AEmojiActor::AEmojiActor()
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
 	CapsuleComponent->SetupAttachment(RootComponent);
 	// RootComponent = FlipbookComponent;
+
+	CurrentScale = FVector(0.1f, 0.1f, 0.1f);
+	TargetScale = FVector(1.0f, 1.0f, 1.0f);
+	ScaleSpeed = 2.f;
+
+	// Initial Scale
+	SetActorScale3D(CurrentScale);
 }
 
 // Called when the game starts or when spawned
@@ -29,10 +36,18 @@ void AEmojiActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Move up
 	FVector Location = GetActorLocation();
 	Location.Z += FloatSpeed * DeltaTime;
 	Location.Y += FMath::Sin(GetGameTimeSinceCreation() * SwaySpeed) * SwayAmount;
 	SetActorLocation(Location);
+
+	// Scale up
+	if (CurrentScale != TargetScale)
+	{
+		CurrentScale = FMath::VInterpTo(CurrentScale, TargetScale, DeltaTime, ScaleSpeed);
+		SetActorScale3D(CurrentScale);
+	}
 
 	if (Location.Z >= TargetHeight)
 	{

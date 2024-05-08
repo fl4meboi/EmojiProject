@@ -44,6 +44,6 @@ void UEmojiSaveGame::SaveMqttMessageArray(const TArray<FString>& NewMqttMessageA
 
 void UEmojiSaveGame::LoadMqttMessageArray(AMqttManager* MqttManager)
 {
-	MqttManager->LoadMqttMessageArray(AMqttManager* MqttManager);
+	MqttManager->LoadMqttMessageArray(MqttMessageArray);
 	MqttMessageArray.Empty();
 }

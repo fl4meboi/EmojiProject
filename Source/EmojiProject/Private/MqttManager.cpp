@@ -7,6 +7,7 @@
 #include "EngineUtils.h"
 #include "TimerManager.h"
 #include "HttpManager.h"
+#include "HttpModule.h"
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 #include "DTMqtt/MqttC/MQTTClient.h"
@@ -75,13 +76,43 @@ void AMqttManager::CreateMqttClient()
 
 void AMqttManager::ConnectToServer()
 {
-	FString ServerURL = ConfigMap.Find(FString("mqtt_broker_ip")) + FString(":") + ConfigMap.Find(FString("mqtt_broker_port"));
+	FString ServerURL = *ConfigMap.Find(FString("mqtt_broker_ip")) + FString(":") + *ConfigMap.Find(FString("mqtt_broker_port"));
 	FString ErrorMsg;
 	bool bIsSuccess;
 
 	(new FAutoDeleteAsyncTask<FMqttAsyncTask>(GameInstance, MqttClient, ServerURL))->StartBackgroundTask();
 
 	return;
+
+	MqttClient->Connect(ServerURL, FGuid::NewGuid().ToString(), FString("ychahn"), FString("1"), 60, bIsSuccess, ErrorMsg);
+	if (bIsSuccess)
+	{
+		if (ReconnectTimerHandle.IsValid())
+		{
+			GetWorld()->GetTimerManager().ClearTimer(ReconnectTimerHandle);
+		}
+
+		GameInstance->LogToFile(LOGTEXT(TEXT("Connection with Mqtt broker was successful")));
+		//
+		// MqttClient->Subscribe(*ConfigMap.Find(FString("mqtt_broker_topic")), EDT_QualityOfService::QoS2, bIsSuccess, ErrorMsg);
+		// if (bIsSuccess)
+		// {
+		// 	
+		// 	GameInstance->LogToFile(LOGTEXT(TEXT("Success to subscribe %s topic."), **ConfigMap.Find(FString("mqtt_broker_topic"))));
+		// }
+		// else
+		// {
+		// 	GameInstance->ShowToastMessage(TEXT("구독 실패"));
+		// 	GameInstance->LogToFile(LOGTEXT(TEXT("Fail to subscribe %s topic.\nError Message : %s"), **ConfigMap.Find(FString("mqtt_broker_topic")), *ErrorMsg));
+		// }
+	}
+	else
+	{
+		GameInstance->ShowToastMessage(TEXT("연결 실패"));
+		GameInstance->LogToFile(LOGTEXT(TEXT("AMqttManager::ConnectToServer) Connection to Mqtt broker failed \nError Message : %s"), *ErrorMsg));
+
+		ReconnectToServer();
+	}
 }
 
 void AMqttManager::ReconnectToServer()
@@ -189,10 +220,10 @@ void AMqttManager::ParseMessage(const FString& Message)
 		TSharedPtr<FJsonObject> BodyObject = DataObject->GetObjectField(TEXT("body"));
 		if (BodyObject.IsValid())
 		{
-			PId = BodyObject->GetObjectField(TEXT("pid"));
-			Text = BodyObject->GetObjectField(TEXT("text"));
-			ImageURL = BodyObject->GetObjectField(TEXT("img"));
-			CallbackURL = BodyObject->GetObjectField(TEXT("callback"));
+			PId = BodyObject->GetStringField(TEXT("pid"));
+			Text = BodyObject->GetStringField(TEXT("text"));
+			ImageURL = BodyObject->GetStringField(TEXT("img"));
+			CallbackURL = BodyObject->GetStringField(TEXT("callback"));
 		}
 	}
 
@@ -247,7 +278,7 @@ bool AMqttManager::RequestHTTP(const FString& URL)
 
 	HttpRequest->SetURL(URL);
 	HttpRequest->SetVerb("Get");
-	HttpRequest->OnProcessRequestComplete().BindUObject(this &AMqttManager::OnResponseReceived);
+	HttpRequest->OnProcessRequestComplete().BindUObject(this, &AMqttManager::OnResponseReceived);
 
 	return HttpRequest->ProcessRequest();
 }
@@ -311,23 +342,24 @@ void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 	}
 }
 
-void AMqttManager::OnCallbackResponseReceived(FHttpRequestPtr Request, FHttpRequestPtr Response,
-												bool bConnectedSuccessfully)
+void AMqttManager::OnCallbackResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response,
+											  bool bConnectedSuccessfully)
 {
 	if (bConnectedSuccessfully == false)
 	{
 		FString Content = UTF8_TO_TCHAR(Request->GetContent().GetData());
-
-		GameInstance->LogToFile(LOGTEXT(TEXT("Callback Http Request was failed\nRequest:%s\nResponse:%s"), *Content, *Response->GetContentAsString));
+		
+		GameInstance->LogToFile(LOGTEXT(TEXT("Callback Http Request was failed\nRequest:%s\nResponse:%s"), *Content, *Response->GetContentAsString()));
 		return;
 	}
-
+	
 	TSharedPtr<FJsonObject> ResponseObject;
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	FJsonSerializer::Deserialize(Reader, ResponseObject);
 	if (ResponseObject->GetStringField(TEXT("status")).Compare(TEXT("00200")) != 0)
 	{
-		GameInstance->LogToFile(LOGTEXT(TEXT("Callback HTTP Response status is invalid. Status is %s"), *ResponseObject->GetStringField(TEXT("status"))));
+		
+		GameInstance->LogToFile(LOGTEXT(TEXT("Callabck HTTP Response status is invalid. Status is %s "), *ResponseObject->GetStringField(TEXT("status"))));
 	}
 }
 
@@ -338,7 +370,7 @@ bool AMqttManager::HasMessage() const
 
 // void AMqttManager::RequestEmojiData()	// 이 함수 필요없음 
 // {
-// 	FScopeLock Lock(&DataGuard);
+// 	FScopeLock Lock(&DataGuard);			// 두 작업 동시에 진행하지 않도록 lock해주는 기능 
 //
 // 	FString CurrentMessage = MqttMessageArray[0];
 // 	MqttMessageArray.RemoveAt(0);
@@ -374,4 +406,5 @@ const FString& AMqttManager::GetPId() const
 {
 	return PId;
 }
+
 

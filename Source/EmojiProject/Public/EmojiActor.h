@@ -54,6 +54,10 @@ public:
 	
 	// 개별 변수
 	int32 VariationIndex = 0;
-
 	int32 EmojiArrayIndex = 0;
+
+protected:
+	FVector CurrentScale;
+	FVector TargetScale;
+	float ScaleSpeed;
 };

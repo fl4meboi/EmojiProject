@@ -35,12 +35,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	// void SpawnEmojiAtLocation(const FVector& SpawnLocation);
 	void SpawnEmoji();
+
+	UFUNCTION(BlueprintCallable, Category = "Emoji")
+	void CenterSpawnEmoji();
+	
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	void RemoveAllEmoji();
 
 	const TArray<AEmojiActor*>& GetEmojiArray() const;
 
-	void LoadEmoji(TArray<FEmojiData>& EmojiDataArray);
+	void  LoadEmoji(TArray<FEmojiData>& EmojiDataArray);
+
+	// void ToggleVisibility();
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,9 +59,14 @@ protected:
 	FVector LeftSpawnPoint;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
 	FVector RightSpawnPoint;
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
+	FVector CenterSpawnPoint;
+
+	UPROPERTY(EditAnywhere, Category = "Emoji")
+	TArray<TSubclassOf<AEmojiActor>> EmojiClassArray;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Emoji")
-	TArray<TSubclassOf<class AEmojiActor>> EmojiClassArray;
+	// UPROPERTY(EditDefaultsOnly, Category = "Emoji")
+	// TArray<TSubclassOf<class AEmojiActor>> EmojiClassArray;
 
 private:
 	UPROPERTY()

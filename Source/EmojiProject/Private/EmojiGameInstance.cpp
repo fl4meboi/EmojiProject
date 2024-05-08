@@ -60,7 +60,7 @@ bool UEmojiGameInstance::LoadFile(FString FileName, TArray<FString>& FileContent
 {
 	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 
-	if (FileManager.FileExists(8(FilePath + FileName)) == false) return false;
+	if (FileManager.FileExists(*(FilePath + FileName)) == false) return false;
 
 	return FFileHelper::LoadFileToStringArray(FileContent, *(FilePath + FileName));
 }
@@ -75,7 +75,7 @@ bool UEmojiGameInstance::LoadConfig()
 		if (Iter.IsEmpty() || Iter[0] == '#') continue;
 		FString LeftStr;
 		FString RightStr;
-		Iter.Split(FString('='), &LeftStr, &RightStr, ESearchCase::IgnoreCase);
+		Iter.Split(FString("="), &LeftStr, &RightStr, ESearchCase::IgnoreCase);
 		ConfigMap.Add(LeftStr, RightStr);
 	}
 
@@ -98,7 +98,7 @@ bool UEmojiGameInstance::ApplyConfig()
 	if (FullScreenMode == nullptr) return false;
 
 	GameUserSettings->SetScreenResolution(FIntPoint(FCString::Atoi(**Width), FCString::Atoi(**Height)));
-	GameUserSettings->SetFullscreenMode(EWindowMode::Type)FCString::Atoi(**FullScreenMode);
+	GameUserSettings->SetFullscreenMode((EWindowMode::Type)FCString::Atoi(**FullScreenMode));
 
 	GameUserSettings->ApplyResolutionSettings(false);
 

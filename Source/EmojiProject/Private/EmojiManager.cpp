@@ -54,9 +54,20 @@ void AEmojiManager::SpawnEmoji()
 		AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(EmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
 		EmojiArray.Add(EmojiActor);
 	}
+}
 
-	
-	
+void AEmojiManager::CenterSpawnEmoji()
+{
+	if (EmojiClassArray.Num() > 0)
+	{
+		// Randomly select an emoji type
+		int32 Index = FMath::RandRange(0, EmojiClassArray.Num() - 1);
+		FVector SpawnLocation = CenterSpawnPoint;
+
+		// Spawn emoji	
+		AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(EmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
+		EmojiArray.Add(EmojiActor);
+	}
 }
 
 void AEmojiManager::RemoveAllEmoji()
@@ -83,12 +94,17 @@ void AEmojiManager::LoadEmoji(TArray<FEmojiData>& EmojiDataArray)
 
 	for (auto EmojiData : EmojiDataArray)
 	{
-		AEmojiActor* Emoji = World->SpawnActor<AEmojiActor>(EmojiTypes[EmojiData.VariationIndex],
+		AEmojiActor* Emoji = World->SpawnActor<AEmojiActor>(EmojiClassArray[EmojiData.VariationIndex],
 			GetActorLocation(), GetActorRotation() + FRotator(0, 180, 0), Params);
 
 		// Emoji Data 갱신
-		Emoji->
+		// Emoji->
 
 		
 	}
 }
+
+// void AEmojiManager::ToggleVisibility()
+// {
+// 	bool bIsVisible = AEmojiActor->
+// }
