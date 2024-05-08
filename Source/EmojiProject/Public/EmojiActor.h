@@ -30,6 +30,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetEmojiSpeed();
+
 	void SetEmojiArrayIndex(const TArray<AEmojiActor*>& EmojiArray);
 	int32 GetEmojiArrayIndex() const;
 
@@ -46,7 +48,7 @@ public:
 
 	// Speeds
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float FloatSpeed = 400.f;
+	float FloatSpeed;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	float SwayAmount = 2.f;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)

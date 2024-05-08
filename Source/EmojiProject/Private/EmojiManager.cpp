@@ -54,7 +54,11 @@ void AEmojiManager::SpawnEmoji()
 
 		// Spawn emoji
 		AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(EmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
-		EmojiArray.Add(EmojiActor);
+		if (EmojiActor)
+		{
+			EmojiActor->SetMovementType(AEmojiActor::EEmojiMovementType::Sway);
+			EmojiArray.Add(EmojiActor);
+		}
 	}
 }
 

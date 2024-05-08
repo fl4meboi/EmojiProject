@@ -59,6 +59,18 @@ void AEmojiActor::Tick(float DeltaTime)
 	}
 }
 
+void AEmojiActor::SetEmojiSpeed()
+{
+	// Default speed for side-spawning emojis
+	FloatSpeed = 400.f;
+
+	// Check movement type to adjust speed
+	if (MovementType == EEmojiMovementType::StraightUp)
+	{
+		FloatSpeed = 100.f;
+	}
+}
+
 void AEmojiActor::SetEmojiArrayIndex(const TArray<AEmojiActor*>& EmojiArray)
 {
 	EmojiArrayIndex = EmojiArray.Find(this);
@@ -74,9 +86,13 @@ void AEmojiActor::SaveData(FEmojiData& EmojiData)
 	EmojiData.VariationIndex = VariationIndex;
 }
 
+
 void AEmojiActor::SetMovementType(EEmojiMovementType NewType)
 {
 	MovementType = NewType;
+
+	// Set speed based on movement type
+	SetEmojiSpeed();
 }
 
 // Mqtt로 받은 사용자가 정한 Emoji에 대한 정보를 받아서 특정 Emoji를 띄워주는 함수 
