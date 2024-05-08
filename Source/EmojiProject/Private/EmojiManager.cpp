@@ -71,13 +71,20 @@ void AEmojiManager::CenterSpawnEmoji()
 	// 	CenterEmojiArray.Add(CenterEmojiActor);
 	// }
 
-	// Randomly select an emoji type
-	int32 Index = FMath::RandRange(0, EmojiClassArray.Num() - 1);
-	FVector SpawnLocation = CenterSpawnPoint;
+	if (EmojiClassArray.Num() > 0)
+	{
+		// Randomly select an emoji type
+		int32 Index = FMath::RandRange(0, EmojiClassArray.Num() - 1);
+		FVector SpawnLocation = CenterSpawnPoint;
 
-	// Spawn emoji
-	AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(EmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
-	EmojiArray.Add(EmojiActor);
+		// Spawn emoji
+		AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(EmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
+		if (EmojiActor)
+		{
+			EmojiActor->SetMovementType(AEmojiActor::EEmojiMovementType::StraightUp);
+			EmojiArray.Add(EmojiActor);
+		}
+	}
 }
 
 // void AEmojiManager::RemoveAllEmoji()

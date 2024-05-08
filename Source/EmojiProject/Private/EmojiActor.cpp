@@ -38,7 +38,12 @@ void AEmojiActor::Tick(float DeltaTime)
 	// Move up
 	FVector Location = GetActorLocation();
 	Location.Z += FloatSpeed * DeltaTime;
-	Location.Y += FMath::Sin(GetGameTimeSinceCreation() * SwaySpeed) * SwayAmount;
+
+	if (MovementType == EEmojiMovementType::Sway)
+	{
+		Location.Y += FMath::Sin(GetGameTimeSinceCreation() * SwaySpeed) * SwayAmount;
+	}
+	
 	SetActorLocation(Location);
 
 	// Scale up
@@ -67,6 +72,11 @@ int32 AEmojiActor::GetEmojiArrayIndex() const
 void AEmojiActor::SaveData(FEmojiData& EmojiData)
 {
 	EmojiData.VariationIndex = VariationIndex;
+}
+
+void AEmojiActor::SetMovementType(EEmojiMovementType NewType)
+{
+	MovementType = NewType;
 }
 
 // Mqtt로 받은 사용자가 정한 Emoji에 대한 정보를 받아서 특정 Emoji를 띄워주는 함수 

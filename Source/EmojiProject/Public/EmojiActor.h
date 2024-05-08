@@ -51,6 +51,17 @@ public:
 	float SwayAmount = 2.f;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	float SwaySpeed = 2.f;
+
+	enum class EEmojiMovementType : uint8
+	{ 
+		Sway,
+		StraightUp
+	};
+
+	EEmojiMovementType MovementType;
+
+	// Set movement type method
+	void SetMovementType(EEmojiMovementType NewType);
 	
 	// 개별 변수
 	int32 VariationIndex = 0;
