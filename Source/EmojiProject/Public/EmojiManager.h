@@ -7,6 +7,20 @@
 #include "GameFramework/Actor.h"
 #include "EmojiManager.generated.h"
 
+class AMqttManager;
+class AEmojiActor;
+
+struct FEmojiData;
+
+USTRUCT()
+struct FEmojiType
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf<AEmojiActor>> EmojiClass;
+};
+
 UCLASS()
 class EMOJIPROJECT_API AEmojiManager : public AActor
 {
@@ -24,12 +38,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	void RemoveAllEmoji();
 
+	const TArray<AEmojiActor*>& GetEmojiArray() const;
+
+	void LoadEmoji(TArray<FEmojiData>& EmojiDataArray);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = "Emoji")
-	TArray<TSubclassOf<AEmojiActor>> EmojiTypes;
+	// UPROPERTY(EditAnywhere, Category = "Emoji")
+	// TArray<TSubclassOf<AEmojiActor>> EmojiTypes;
 
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
 	FVector LeftSpawnPoint;
@@ -37,9 +55,10 @@ protected:
 	FVector RightSpawnPoint;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Emoji")
-	TSubclassOf<class AEmojiActor> EmojiActorClass;
+	TArray<TSubclassOf<class AEmojiActor>> EmojiClassArray;
 
 private:
+	UPROPERTY()
 	TArray<AEmojiActor*> EmojiArray;
 };
 

@@ -15,6 +15,8 @@ AEmojiManager::AEmojiManager()
 void AEmojiManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// for (FEmojiType& EmojiType : )
 	
 }
 
@@ -41,16 +43,19 @@ void AEmojiManager::Tick(float DeltaTime)
 
 void AEmojiManager::SpawnEmoji()
 {
-	if (EmojiTypes.Num() > 0)
+	if (EmojiClassArray.Num() > 0)
 	{
 		// Randomly select an emoji type
-		int32 Index = FMath::RandRange(0, EmojiTypes.Num() - 1);
+		int32 Index = FMath::RandRange(0, EmojiClassArray.Num() - 1);
 		FVector SpawnLocation = (FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint);
 		// FVector SpawnLocation = RightSpawnPoint;
 
 		// Spawn emoji
-		GetWorld()->SpawnActor<AEmojiActor>(EmojiTypes[Index], SpawnLocation, FRotator::ZeroRotator);
+		AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(EmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
+		EmojiArray.Add(EmojiActor);
 	}
+
+	
 	
 }
 
@@ -61,4 +66,29 @@ void AEmojiManager::RemoveAllEmoji()
 		EmojiArray[i]->Destroy();
 	}
 	EmojiArray.Empty();
+}
+
+const TArray<AEmojiActor*>& AEmojiManager::GetEmojiArray() const
+{
+	return EmojiArray;
+}
+
+void AEmojiManager::LoadEmoji(TArray<FEmojiData>& EmojiDataArray)
+{
+	UWorld* World = GetWorld();
+	check(World);
+
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	for (auto EmojiData : EmojiDataArray)
+	{
+		AEmojiActor* Emoji = World->SpawnActor<AEmojiActor>(EmojiTypes[EmojiData.VariationIndex],
+			GetActorLocation(), GetActorRotation() + FRotator(0, 180, 0), Params);
+
+		// Emoji Data 갱신
+		Emoji->
+
+		
+	}
 }

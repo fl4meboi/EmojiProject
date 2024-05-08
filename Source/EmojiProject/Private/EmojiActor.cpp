@@ -40,3 +40,20 @@ void AEmojiActor::Tick(float DeltaTime)
 	}
 }
 
+void AEmojiActor::SetEmojiArrayIndex(const TArray<AEmojiActor*>& EmojiArray)
+{
+	EmojiArrayIndex = EmojiArray.Find(this);
+}
+
+int32 AEmojiActor::GetEmojiArrayIndex() const
+{
+	return EmojiArrayIndex;
+}
+
+void AEmojiActor::SaveData(FEmojiData& EmojiData)
+{
+	EmojiData.VariationIndex = VariationIndex;
+}
+
+// Mqtt로 받은 사용자가 정한 Emoji에 대한 정보를 받아서 특정 Emoji를 띄워주는 함수 
+
