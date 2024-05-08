@@ -2,7 +2,6 @@
 
 
 #include "EmojiActor.h"
-
 #include "Components/CapsuleComponent.h"
 
 // Sets default values
@@ -35,7 +34,7 @@ void AEmojiActor::BeginPlay()
 void AEmojiActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	// Move up
 	FVector Location = GetActorLocation();
 	Location.Z += FloatSpeed * DeltaTime;

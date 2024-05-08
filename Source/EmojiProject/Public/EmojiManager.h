@@ -39,12 +39,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	void CenterSpawnEmoji();
 	
-	UFUNCTION(BlueprintCallable, Category = "Emoji")
-	void RemoveAllEmoji();
+	// UFUNCTION(BlueprintCallable, Category = "Emoji")
+	// void RemoveAllEmoji();
 
 	const TArray<AEmojiActor*>& GetEmojiArray() const;
 
-	void  LoadEmoji(TArray<FEmojiData>& EmojiDataArray);
+	void LoadEmoji(TArray<FEmojiData>& EmojiDataArray);
 
 	// void ToggleVisibility();
 
@@ -64,6 +64,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TArray<TSubclassOf<AEmojiActor>> EmojiClassArray;
+
+	UPROPERTY(EditAnywhere, Category = "Emoji")
+	TArray<TSubclassOf<AEmojiActor>> CenterEmojiClassArray;
 	
 	// UPROPERTY(EditDefaultsOnly, Category = "Emoji")
 	// TArray<TSubclassOf<class AEmojiActor>> EmojiClassArray;
@@ -71,6 +74,9 @@ protected:
 private:
 	UPROPERTY()
 	TArray<AEmojiActor*> EmojiArray;
+
+	UPROPERTY()
+	TArray<AEmojiActor*> CenterEmojiArray;
 };
 
 

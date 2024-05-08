@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "CenterEmojiActor.generated.h"
 
+class AEmojiManager;
+class UCapsuleComponent;
+
 UCLASS()
 class EMOJIPROJECT_API ACenterEmojiActor : public AActor
 {
@@ -23,4 +26,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UCapsuleComponent* CapsuleComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	float TargetHeight = 500.f;
+
+	// Speeds
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	float FloatSpeed = 100.f;
+
+protected:
+	FVector CurrentScale;
+	FVector TargetScale;
+	float ScaleSpeed;
 };

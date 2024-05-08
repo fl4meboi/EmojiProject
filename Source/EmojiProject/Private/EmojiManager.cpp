@@ -3,6 +3,8 @@
 
 #include "EmojiManager.h"
 
+#include "CenterEmojiActor.h"
+
 // Sets default values
 AEmojiManager::AEmojiManager()
 {
@@ -24,7 +26,7 @@ void AEmojiManager::BeginPlay()
 void AEmojiManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
 
 // void AEmojiManager::SpawnEmojiAtLocation(const FVector& SpawnLocation)
@@ -58,26 +60,34 @@ void AEmojiManager::SpawnEmoji()
 
 void AEmojiManager::CenterSpawnEmoji()
 {
-	if (EmojiClassArray.Num() > 0)
-	{
-		// Randomly select an emoji type
-		int32 Index = FMath::RandRange(0, EmojiClassArray.Num() - 1);
-		FVector SpawnLocation = CenterSpawnPoint;
+	// if (EmojiClassArray.Num() > 0)
+	// {
+	// 	// Randomly select an emoji type
+	// 	int32 Index = FMath::RandRange(0, CenterEmojiClassArray.Num() - 1);
+	// 	FVector SpawnLocation = CenterSpawnPoint;
+	//
+	// 	// Spawn emoji	
+	// 	ACenterEmojiActor* CenterEmojiActor = GetWorld()->SpawnActor<ACenterEmojiActor>(CenterEmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
+	// 	CenterEmojiArray.Add(CenterEmojiActor);
+	// }
 
-		// Spawn emoji	
-		AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(EmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
-		EmojiArray.Add(EmojiActor);
-	}
+	// Randomly select an emoji type
+	int32 Index = FMath::RandRange(0, EmojiClassArray.Num() - 1);
+	FVector SpawnLocation = CenterSpawnPoint;
+
+	// Spawn emoji
+	AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(EmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
+	EmojiArray.Add(EmojiActor);
 }
 
-void AEmojiManager::RemoveAllEmoji()
-{
-	for (int i = 0; i < EmojiArray.Num(); ++i)
-	{
-		EmojiArray[i]->Destroy();
-	}
-	EmojiArray.Empty();
-}
+// void AEmojiManager::RemoveAllEmoji()
+// {
+// 	for (int i = 0; i < EmojiArray.Num(); ++i)
+// 	{
+// 		EmojiArray[i]->Destroy();
+// 	}
+// 	EmojiArray.Empty();
+// }
 
 const TArray<AEmojiActor*>& AEmojiManager::GetEmojiArray() const
 {
