@@ -32,6 +32,10 @@ public:
 
 	void SetEmojiSpeed();
 
+	void SetNewEmojiSpeed(float NewFloatSpeed, float NewSwayAmount, float NewSwaySpeed);
+
+	void Init(int32 NewVariationIndex);
+
 	void SetEmojiArrayIndex(const TArray<AEmojiActor*>& EmojiArray);
 	int32 GetEmojiArrayIndex() const;
 

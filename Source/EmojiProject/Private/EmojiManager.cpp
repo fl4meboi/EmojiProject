@@ -4,6 +4,10 @@
 #include "EmojiManager.h"
 
 #include "CenterEmojiActor.h"
+#include "MqttManager.h"
+#include "EmojiGameInstance.h"
+#include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEmojiManager::AEmojiManager()
@@ -19,14 +23,36 @@ void AEmojiManager::BeginPlay()
 	Super::BeginPlay();
 
 	// for (FEmojiType& EmojiType : )
-	
+
+	GameInstance = GetGameInstance<UEmojiGameInstance>();
+	check(GameInstance);
+
+	// Set Config Data
+	const TMap<FString, FString>& ConfigMap = GameInstance->GetConfigMap();
+
+	FloatSpeed = FCString::Atof(**ConfigMap.Find(FString("floatspeed")));
+	SwayAmount = FCString::Atof(**ConfigMap.Find(FString("swayamount")));
+	SwaySpeed = FCString::Atof(**ConfigMap.Find(FString("swayspeed")));
+
+	// Get MqttManager
+	TActorIterator<AMqttManager> It(GetWorld());
+	MqttManager = *It;
+	check(MqttManager);
 }
 
 // Called every frame
 void AEmojiManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
+	if (bIsLoading || bIsSpawning) return;
+
+	if (MqttManager && MqttManager->HasMessage())
+	{
+		bIsSpawning = true;
+
+		MqttManager->RequestEmojiData();
+	}
 }
 
 // void AEmojiManager::SpawnEmojiAtLocation(const FVector& SpawnLocation)
@@ -45,6 +71,9 @@ void AEmojiManager::Tick(float DeltaTime)
 
 void AEmojiManager::SpawnEmoji()
 {
+	UWorld* World = GetWorld();
+	check(World);
+		
 	if (EmojiClassArray.Num() > 0)
 	{
 		// Randomly select an emoji type
@@ -59,7 +88,14 @@ void AEmojiManager::SpawnEmoji()
 			EmojiActor->SetMovementType(AEmojiActor::EEmojiMovementType::Sway);
 			EmojiArray.Add(EmojiActor);
 		}
+
+		if (EmojiSpawnSound)
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
+		}
 	}
+
+	bIsSpawning = false;
 }
 
 void AEmojiManager::CenterSpawnEmoji()
@@ -75,6 +111,9 @@ void AEmojiManager::CenterSpawnEmoji()
 	// 	CenterEmojiArray.Add(CenterEmojiActor);
 	// }
 
+	UWorld* World = GetWorld();
+	check(World);
+	
 	if (EmojiClassArray.Num() > 0)
 	{
 		// Randomly select an emoji type
@@ -88,7 +127,14 @@ void AEmojiManager::CenterSpawnEmoji()
 			EmojiActor->SetMovementType(AEmojiActor::EEmojiMovementType::StraightUp);
 			EmojiArray.Add(EmojiActor);
 		}
+
+		if (CenterEmojiSpawnSound)
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), CenterEmojiSpawnSound);
+		}
 	}
+
+	bIsSpawning = false;
 }
 
 // void AEmojiManager::RemoveAllEmoji()

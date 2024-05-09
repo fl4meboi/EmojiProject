@@ -71,6 +71,18 @@ void AEmojiActor::SetEmojiSpeed()
 	}
 }
 
+void AEmojiActor::SetNewEmojiSpeed(float NewFloatSpeed, float NewSwayAmount, float NewSwaySpeed)
+{
+	if (NewFloatSpeed != -1) FloatSpeed = NewFloatSpeed;
+	if (NewSwayAmount != -1) SwayAmount = NewSwayAmount;
+	if (NewSwaySpeed != -1) SwaySpeed = NewSwayAmount;
+}
+
+void AEmojiActor::Init(int32 NewVariationIndex)
+{
+	VariationIndex = NewVariationIndex;
+}
+
 void AEmojiActor::SetEmojiArrayIndex(const TArray<AEmojiActor*>& EmojiArray)
 {
 	EmojiArrayIndex = EmojiArray.Find(this);

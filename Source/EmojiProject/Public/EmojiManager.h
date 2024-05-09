@@ -87,6 +87,20 @@ private:
 
 	UPROPERTY()
 	class UEmojiGameInstance* GameInstance;
+
+	// Speeds
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	float FloatSpeed = 400.f;
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	float SwayAmount = 2.f;
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	float SwaySpeed = 2.f;
+
+	// Sound
+	UPROPERTY(EditDefaultsOnly, Meta = (AllowPrivateAccess))
+	USoundBase* EmojiSpawnSound;
+	UPROPERTY(EditDefaultsOnly, Meta = (AllowPrivateAccess))
+	USoundBase* CenterEmojiSpawnSound;
 };
 
 
