@@ -46,8 +46,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, Meta = (AllowPrivateAccess))
 	float TimeToShowToastMessage = 5.f;
 
-	UPROPERTY(Transient, Meta = (BindWidget))
+	UPROPERTY(Transient, Meta = (BindWidgetAnim))
 	UWidgetAnimation* ShowToastMessageAnimation;
-	UPROPERTY(Transient, Meta = (AllowPrivateAccess))
+	UPROPERTY(Transient, Meta = (BindWidgetAnim))
 	UWidgetAnimation* HideToastMessageAnimation; 
 };
