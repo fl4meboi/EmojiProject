@@ -3,3 +3,9 @@
 
 #include "LoginWidget.h"
 
+#include "Components/SizeBox.h"
+
+void ULoginWidget::ShowLoginErrorMessage()
+{
+	SB_Toast->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+}

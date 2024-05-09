@@ -65,8 +65,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TArray<TSubclassOf<AEmojiActor>> EmojiClassArray;
 
-	UPROPERTY(EditAnywhere, Category = "Emoji")
-	TArray<TSubclassOf<AEmojiActor>> CenterEmojiClassArray;
+	// UPROPERTY(EditAnywhere, Category = "Emoji")
+	// TArray<TSubclassOf<AEmojiActor>> CenterEmojiClassArray;
 	
 	// UPROPERTY(EditDefaultsOnly, Category = "Emoji")
 	// TArray<TSubclassOf<class AEmojiActor>> EmojiClassArray;
@@ -75,8 +75,8 @@ private:
 	UPROPERTY()
 	TArray<AEmojiActor*> EmojiArray;
 
-	UPROPERTY()
-	TArray<AEmojiActor*> CenterEmojiArray;
+	// UPROPERTY()
+	// TArray<AEmojiActor*> CenterEmojiArray;
 };
 
 

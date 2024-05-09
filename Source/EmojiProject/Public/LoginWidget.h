@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "LoginWidget.generated.h"
 
+class USizeBox;
 /**
  * 
  */
@@ -13,5 +14,12 @@ UCLASS()
 class EMOJIPROJECT_API ULoginWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void ShowLoginErrorMessage();
 	
+protected:
+	UPROPERTY(Meta = (BindWidget))
+	USizeBox* SB_Toast;
 };
