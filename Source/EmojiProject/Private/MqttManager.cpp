@@ -185,9 +185,11 @@ void AMqttManager::OnMessage(const FString& Topic, const FString& Message)
 void AMqttManager::ParseMessage(const FString& Message)
 {
 	PId = FString();
-	Text = FString();
-	ImageURL = FString();
-	CallbackURL = FString();
+	Emoji = FString();
+	Special = FString();
+	// Text = FString();
+	// ImageURL = FString();
+	// CallbackURL = FString();
 
 	TSharedPtr<FJsonObject> MessageObject;
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Message);
@@ -206,7 +208,7 @@ void AMqttManager::ParseMessage(const FString& Message)
 		if (HeadObject.IsValid())
 		{
 			if (HeadObject->GetStringField(TEXT("apicommand")).Compare(TEXT("content")) != 0
-			|| HeadObject->GetStringField(TEXT("apiaction")).Compare(TEXT("letter")) != 0
+			|| HeadObject->GetStringField(TEXT("apiaction")).Compare(TEXT("emoji")) != 0
 			|| HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("push")) != 0)
 			{
 				return;
@@ -221,13 +223,50 @@ void AMqttManager::ParseMessage(const FString& Message)
 		if (BodyObject.IsValid())
 		{
 			PId = BodyObject->GetStringField(TEXT("pid"));
-			Text = BodyObject->GetStringField(TEXT("text"));
-			ImageURL = BodyObject->GetStringField(TEXT("img"));
-			CallbackURL = BodyObject->GetStringField(TEXT("callback"));
+			Emoji = BodyObject->GetStringField(TEXT("emoji"));
+			Special = BodyObject->GetStringField(TEXT("special"));
+			// Text = BodyObject->GetStringField(TEXT("text"));
+			// ImageURL = BodyObject->GetStringField(TEXT("img"));
+			// CallbackURL = BodyObject->GetStringField(TEXT("callback"));
 		}
 	}
 
 	return;
+
+	// FString LeftStr;
+	// FString RightStr;
+	// if (Message.Split(FString("pid\":\""), &LeftStr, &RightStr))
+	// {
+	// 	if (RightStr.Split(FString("\""), &PId, &RightStr))
+	// 	{
+	// 		if (Message.Split(FString("text\":\""), &LeftStr, &RightStr))
+	// 		{
+	// 			// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) Found Right String : %s"), *RightStr);
+	// 	
+	// 			if (RightStr.Split(FString("\""), &Text, &RightStr))
+	// 			{
+	// 				// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) Text : %s"), *Text);
+	//
+	// 				if (RightStr.Split(FString("img\":\""), &LeftStr, &RightStr))
+	// 				{
+	// 					if (RightStr.Split(FString("\""), &ImageURL, &RightStr))
+	// 					{
+	// 						// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) ImageURL : %s"), *ImageURL);
+	//
+	// 						if (RightStr.Split(FString("callback\":\""), &LeftStr, &RightStr))
+	// 						{
+	// 							if (RightStr.Split(FString("\""), &CallbackURL, &RightStr))
+	// 							{
+	// 								// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) CallbackURL : %s"), *CallbackURL);
+	// 							}
+	// 						}
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// 	
+	// }
 
 	FString LeftStr;
 	FString RightStr;
@@ -239,23 +278,23 @@ void AMqttManager::ParseMessage(const FString& Message)
 			{
 				// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) Found Right String : %s"), *RightStr);
 		
-				if (RightStr.Split(FString("\""), &Text, &RightStr))
+				if (RightStr.Split(FString("\""), &Emoji, &RightStr))
 				{
-					// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) Text : %s"), *Text);
+					// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) Emoji : %s"), *Text);
 
 					if (RightStr.Split(FString("img\":\""), &LeftStr, &RightStr))
 					{
-						if (RightStr.Split(FString("\""), &ImageURL, &RightStr))
+						if (RightStr.Split(FString("\""), &Special, &RightStr))
 						{
-							// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) ImageURL : %s"), *ImageURL);
+							// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) Special : %s"), *ImageURL);
 
-							if (RightStr.Split(FString("callback\":\""), &LeftStr, &RightStr))
-							{
-								if (RightStr.Split(FString("\""), &CallbackURL, &RightStr))
-								{
-									// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) CallbackURL : %s"), *CallbackURL);
-								}
-							}
+							// if (RightStr.Split(FString("callback\":\""), &LeftStr, &RightStr))
+							// {
+							// 	if (RightStr.Split(FString("\""), &CallbackURL, &RightStr))
+							// 	{
+							// 		// UE_LOG(LogTemp, Warning, TEXT("AMqttManager::OnMessage) CallbackURL : %s"), *CallbackURL);
+							// 	}
+							// }
 						}
 					}
 				}

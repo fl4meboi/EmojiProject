@@ -147,9 +147,12 @@ private:
 
 	// Data
 	FString PId;
-	FString Text;
-	FString ImageURL;
-	FString CallbackURL;
+	FString Emoji;
+	FString Special;
+	// FString Text;
+	// FString ImageURL;
+	// FString CallbackURL;
+	
 
 	// Mutex
 	mutable FCriticalSection DataGuard;
