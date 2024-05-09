@@ -185,8 +185,8 @@ void AMqttManager::OnMessage(const FString& Topic, const FString& Message)
 void AMqttManager::ParseMessage(const FString& Message)
 {
 	PId = FString();
-	Emoji = FString();
-	Special = FString();
+	Emoji = FString();			// Map 또는 Array로 관리 
+	Special = FString();		// true / false에 반응 
 	// Text = FString();
 	// ImageURL = FString();
 	// CallbackURL = FString();
@@ -324,16 +324,16 @@ bool AMqttManager::RequestHTTP(const FString& URL)
 
 void AMqttManager::CallbackHTTP(/* Emoji 종류 입력 변수 */)
 {
-	if (CallbackURL.IsEmpty()) return;
+	// if (CallbackURL.IsEmpty()) return;
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = FHttpModule::Get().CreateRequest();
 	HttpRequest->SetVerb("POST");
 
-	HttpRequest->SetURL(CallbackURL);
+	// HttpRequest->SetURL(CallbackURL);
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 	TSharedRef<FJsonObject> RequestObj = MakeShared<FJsonObject>();
 	RequestObj->SetStringField("app_id", *ConfigMap.Find(FString("app_id")));
 	RequestObj->SetStringField("message_pid", PId);
-	// RequestObj->SetStringField("Emoji 종류 입력 받는 변수 ")
+	// RequestObj->SetStringField("Emoji 종류 입력 받는 변수 ")		// Emoji 종류는 Mqtt로 받음 
 	FString RequestBody;
 	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestBody);
 	FJsonSerializer::Serialize(RequestObj, Writer);
@@ -346,12 +346,12 @@ void AMqttManager::CallbackHTTP(/* Emoji 종류 입력 변수 */)
 
 void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 {
-	if (bConnectedSuccessfully == false)
-	{
-		FString Content = UTF8_TO_TCHAR(Request->GetContent().GetData());
-		GameInstance->LogToFile((LOGTEXT(TEXT("Image Http Request was failed\nRequest:%s\nResponse:%s"), *Content, *Response->GetContentAsString())));
-		return;
-	}
+	// if (bConnectedSuccessfully == false)
+	// {
+	// 	FString Content = UTF8_TO_TCHAR(Request->GetContent().GetData());
+	// 	GameInstance->LogToFile((LOGTEXT(TEXT("Image Http Request was failed\nRequest:%s\nResponse:%s"), *Content, *Response->GetContentAsString())));
+	// 	return;
+	// }
 	
 	TSharedPtr<FJsonObject> ResponseObject;
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
@@ -384,13 +384,13 @@ void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 void AMqttManager::OnCallbackResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response,
 											  bool bConnectedSuccessfully)
 {
-	if (bConnectedSuccessfully == false)
-	{
-		FString Content = UTF8_TO_TCHAR(Request->GetContent().GetData());
-		
-		GameInstance->LogToFile(LOGTEXT(TEXT("Callback Http Request was failed\nRequest:%s\nResponse:%s"), *Content, *Response->GetContentAsString()));
-		return;
-	}
+	// if (bConnectedSuccessfully == false)
+	// {
+	// 	FString Content = UTF8_TO_TCHAR(Request->GetContent().GetData());
+	// 	
+	// 	GameInstance->LogToFile(LOGTEXT(TEXT("Callback Http Request was failed\nRequest:%s\nResponse:%s"), *Content, *Response->GetContentAsString()));
+	// 	return;
+	// }
 	
 	TSharedPtr<FJsonObject> ResponseObject;
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());

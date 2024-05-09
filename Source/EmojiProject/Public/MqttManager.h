@@ -110,7 +110,7 @@ public:
 
 	UFUNCTION()
 	void CallbackHTTP(/* Emoji 종류 입력 변수 */);
-	// 여기서 Emoji 종류 신호를 입력받는 함수를 구현해야할 듯
+	// 여기서 Emoji 종류 신호를 입력받는 함수를 구현해야할 듯		// Emoji 종류는 Mqtt로 받음 
 
 	void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully);
 

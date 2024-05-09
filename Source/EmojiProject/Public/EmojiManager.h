@@ -77,6 +77,16 @@ private:
 
 	// UPROPERTY()
 	// TArray<AEmojiActor*> CenterEmojiArray;
+
+	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
+	AMqttManager* MqttManager;
+	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
+	bool bIsSpawning = true;
+	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
+	bool bIsLoading = false;
+
+	UPROPERTY()
+	class UEmojiGameInstance* GameInstance;
 };
 
 
