@@ -8,7 +8,7 @@ public class EmojiProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "InputCore", "Paper2D" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "DTMqtt" });
 		

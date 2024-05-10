@@ -34,10 +34,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	// void SpawnEmojiAtLocation(const FVector& SpawnLocation);
-	void SpawnEmoji();
+	void SpawnEmoji(const FString& EmojiName);
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
-	void CenterSpawnEmoji();
+	void CenterSpawnEmoji(const FString& EmojiName);
 	
 	// UFUNCTION(BlueprintCallable, Category = "Emoji")
 	// void RemoveAllEmoji();
@@ -64,6 +64,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TArray<TSubclassOf<AEmojiActor>> EmojiClassArray;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Emoji")
+	TMap<FString, TSubclassOf<AEmojiActor>> EmojiMap;
 
 	// UPROPERTY(EditAnywhere, Category = "Emoji")
 	// TArray<TSubclassOf<AEmojiActor>> CenterEmojiClassArray;

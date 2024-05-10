@@ -2,6 +2,11 @@
 
 
 #include "EmojiActor.h"
+
+#include "EmojiPlayerController.h"
+#include "EmojiPlayerController.h"
+#include "Components/BillboardComponent.h"
+#include "PaperFlipbook.h"
 #include "Components/CapsuleComponent.h"
 
 // Sets default values
@@ -14,6 +19,9 @@ AEmojiActor::AEmojiActor()
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("RootComponent"));
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
 	CapsuleComponent->SetupAttachment(RootComponent);
+	PaperFlipbook = CreateDefaultSubobject<UPaperFlipbook>("PaperFlipbook");
+	// PaperFlipbook->SetupAttachment(CapsuleComponent);
+	
 	// RootComponent = FlipbookComponent;
 
 	CurrentScale = FVector(0.1f, 0.1f, 0.1f);

@@ -69,7 +69,7 @@ void AEmojiManager::Tick(float DeltaTime)
 // 	}
 // }
 
-void AEmojiManager::SpawnEmoji()
+void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 {
 	UWorld* World = GetWorld();
 	check(World);
@@ -98,7 +98,7 @@ void AEmojiManager::SpawnEmoji()
 	bIsSpawning = false;
 }
 
-void AEmojiManager::CenterSpawnEmoji()
+void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName)
 {
 	// if (EmojiClassArray.Num() > 0)
 	// {

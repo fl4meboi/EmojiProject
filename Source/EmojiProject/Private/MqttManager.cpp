@@ -209,10 +209,30 @@ void AMqttManager::ParseMessage(const FString& Message)
 		if (HeadObject.IsValid())
 		{
 			if (HeadObject->GetStringField(TEXT("apicommand")).Compare(TEXT("content")) != 0
-			|| HeadObject->GetStringField(TEXT("apiaction")).Compare(TEXT("emoji")) != 0
-			|| HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("push")) != 0)
+			|| HeadObject->GetStringField(TEXT("apiaction")).Compare(TEXT("emoji")) != 0)
 			{
-				return;
+				if (HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("push")) != 0)
+				{
+					TSharedPtr<FJsonObject> BodyObject = DataObject->GetObjectField(TEXT("body"));
+					if (BodyObject.IsValid())
+					{
+						PId = BodyObject->GetStringField(TEXT("pid"));
+						Emoji = BodyObject->GetStringField(TEXT("emoji"));
+						Special = BodyObject->GetStringField(TEXT("special"));
+					}
+					return;
+				}
+
+				if (HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("power")) != 0)
+				{
+					TSharedPtr<FJsonObject> BodyObject = DataObject->GetObjectField(TEXT("body"));
+					if (BodyObject.IsValid())
+					{
+						PId = BodyObject->GetStringField(TEXT("pid"));
+						Power = BodyObject->GetStringField(TEXT("power"));
+					}
+					return;
+				}
 			}
 		}
 		else
@@ -220,16 +240,7 @@ void AMqttManager::ParseMessage(const FString& Message)
 			return;
 		}
 
-		TSharedPtr<FJsonObject> BodyObject = DataObject->GetObjectField(TEXT("body"));
-		if (BodyObject.IsValid())
-		{
-			PId = BodyObject->GetStringField(TEXT("pid"));
-			Emoji = BodyObject->GetStringField(TEXT("emoji"));
-			Special = BodyObject->GetStringField(TEXT("special"));
-			// Text = BodyObject->GetStringField(TEXT("text"));
-			// ImageURL = BodyObject->GetStringField(TEXT("img"));
-			// CallbackURL = BodyObject->GetStringField(TEXT("callback"));
-		}
+		
 	}
 
 	return;

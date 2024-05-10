@@ -6,7 +6,8 @@
 #include "EmojiSaveGame.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Actor.h"
-// #include "PaperFlipbookComponent.h"
+#include "PaperFlipbookComponent.h"
+#include "PaperSpriteComponent.h"
 #include "EmojiActor.generated.h"
 
 class AEmojiManager;
@@ -45,6 +46,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	UCapsuleComponent* CapsuleComponent;
 	// UPaperFlipbookComponent* FlipbookComponent;
+	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	// class PAPER2UPaperSpriteComponent : public UMeshComponent;
+	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	// UBillboardComponent* FlipbookComponent;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UPaperFlipbook* PaperFlipbook;
 
 	// Location Limit
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
