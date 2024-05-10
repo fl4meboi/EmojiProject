@@ -19,7 +19,7 @@ AEmojiActor::AEmojiActor()
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("RootComponent"));
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
 	CapsuleComponent->SetupAttachment(RootComponent);
-	PaperFlipbook = CreateDefaultSubobject<UPaperFlipbook>("PaperFlipbook");
+	// PaperFlipbook = CreateDefaultSubobject<UPaperFlipbook>("PaperFlipbook");
 	// PaperFlipbook->SetupAttachment(CapsuleComponent);
 	
 	// RootComponent = FlipbookComponent;

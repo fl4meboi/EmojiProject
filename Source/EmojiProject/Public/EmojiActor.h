@@ -50,8 +50,8 @@ public:
 	// class PAPER2UPaperSpriteComponent : public UMeshComponent;
 	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	// UBillboardComponent* FlipbookComponent;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UPaperFlipbook* PaperFlipbook;
+	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	// UPaperFlipbook* PaperFlipbook;
 
 	// Location Limit
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)

@@ -385,7 +385,20 @@ void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 		// LeftStr.Split("/", &LeftStr, &ImageFormat);
 		// ImageFormat.Split(";", &ImageFormat, &LeftStr);
 
-		EmojiManager->SpawnEmoji();
+		// // Parse the message to extract the EmojiName
+		// FString EmojiName = ParseMessage(const FString& Message);  // Implement this parsing based on your message format
+		//
+		// // Call SpawnEmoji with the parsed name
+		// EmojiManager->SpawnEmoji(EmojiName);
+
+		FString EmojiName = EmojiManager->GetRandomEmojiName();
+		if (!EmojiName.IsEmpty())
+		{
+			EmojiManager->SetCurrentEmoji(EmojiName);
+			EmojiManager = GetWorld()->SpawnActor<AEmojiManager>();
+
+			UE_LOG(LogTemp, Warning, TEXT("OnResponseReceived implemented"));
+		}
 	}
 	else
 	{
@@ -419,26 +432,28 @@ bool AMqttManager::HasMessage() const
 	return (bIsLoading == false) && (MqttMessageArray.Num() > 0);
 }
 
-// void AMqttManager::RequestEmojiData()	// 이 함수 필요없음 
-// {
-// 	// FScopeLock Lock(&DataGuard);			// 두 작업 동시에 진행하지 않도록 lock해주는 기능 
-//
-// 	FString CurrentMessage = MqttMessageArray[0];
-// 	MqttMessageArray.RemoveAt(0);
-//
-// 	ParseMessage(CurrentMessage);
-//
-// 	// if (ImageURL.IsEmpty() == false)
-// 	// {
-// 	// 	RequestHTTP(ImageURL);
-// 	// }
-// 	// else
-// 	// {
-// 	// 	EmojiManager->SpawnEmoji();
-// 	// }
-//
-// 	EmojiManager->SpawnEmoji();
-// }
+void AMqttManager::RequestEmojiData()	// 이 함수 필요없음 
+{
+	// FScopeLock Lock(&DataGuard);			// 두 작업 동시에 진행하지 않도록 lock해주는 기능 
+
+	FString CurrentMessage = MqttMessageArray[0];
+	MqttMessageArray.RemoveAt(0);
+
+	ParseMessage(CurrentMessage);
+
+	// if (ImageURL.IsEmpty() == false)
+	// {
+	// 	RequestHTTP(ImageURL);
+	// }
+	// else
+	// {
+	// 	EmojiManager->SpawnEmoji();
+	// }
+
+	EmojiManager->SpawnEmoji();
+
+	UE_LOG(LogTemp, Warning, TEXT("RequestEmojiData implemented"));
+}
 
 // // 이 부분도 바꿔야 함 
 // TArray<uint8> AMqttManager::FStringToUint8(const FString& InString)		// 여기도 필요 없음 

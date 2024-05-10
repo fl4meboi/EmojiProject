@@ -8,6 +8,7 @@ void AEmojiPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAction("IE_Spawn", IE_Pressed, this, &AEmojiPlayerController::SpawnEmoji);
+	
 }
 
 // void AEmojiPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -21,10 +22,13 @@ void AEmojiPlayerController::SetupInputComponent()
 
 void AEmojiPlayerController::SpawnEmoji()
 {
-	if (!EmojiManager)
+	FString EmojiName = EmojiManager->GetRandomEmojiName();
+	if (!EmojiName.IsEmpty())
 	{
+		EmojiManager->SetCurrentEmoji(EmojiName);
 		EmojiManager = GetWorld()->SpawnActor<AEmojiManager>();
 	}
-	EmojiManager->SpawnEmoji();
 }
+
+
 

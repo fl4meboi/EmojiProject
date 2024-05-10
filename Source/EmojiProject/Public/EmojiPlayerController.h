@@ -20,12 +20,14 @@ protected:
 	// void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 	virtual void SetupInputComponent() override;
 
+	void SpawnEmoji();
+
 private:
 	AEmojiManager* EmojiManager;
 
 	// UPROPERTY(EditAnywhere)
 	// UInputAction* IE_Spawn;
 
-	void SpawnEmoji();
+	FString CurrentEmojiName;  // Stores the current emoji name to spawn	
 	
 };

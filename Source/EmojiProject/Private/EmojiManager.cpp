@@ -52,88 +52,96 @@ void AEmojiManager::Tick(float DeltaTime)
 		bIsSpawning = true;
 
 		// MqttManager->RequestEmojiData();
+		// Spawn 코드를 써야 함!
+		MqttManager->RequestEmojiData();
 	}
 }
 
-// void AEmojiManager::SpawnEmojiAtLocation(const FVector& SpawnLocation)
-// {
-// 	if (EmojiActorClass)
-// 	{
-// 		AEmojiActor* Emoji = GetWorld()->SpawnActor<AEmojiActor>(EmojiActorClass, SpawnLocation, FRotator::ZeroRotator);
-// 		if (Emoji)
-// 		{
-// 			Emoji->StartPosition = SpawnLocation;
-// 			// Set other initial properties here
-//
-// 		}
-// 	}
-// }
+void AEmojiManager::SetCurrentEmoji(const FString& EmojiName)
+{
+	CurrentEmojiName = EmojiName;
+}
 
-void AEmojiManager::SpawnEmoji(const FString& EmojiName)
+FString AEmojiManager::GetRandomEmojiName()
+{
+	if (EmojiMap.Num() > 0)
+	{
+		// Get all keys from the map
+		TArray<FString> Keys;
+		EmojiMap.GetKeys(Keys);
+
+		// Select a random key
+		int32 RandomIndex = FMath::RandRange(0, Keys.Num() - 1);
+		return Keys[RandomIndex];
+	}
+
+	return FString();	// Return an empty string if the map is empty
+}
+
+void AEmojiManager::SpawnEmoji()
 {
 	UWorld* World = GetWorld();
 	check(World);
 		
 	if (EmojiClassArray.Num() > 0)
 	{
-		// Randomly select an emoji type
-		int32 Index = FMath::RandRange(0, EmojiClassArray.Num() - 1);
-		FVector SpawnLocation = (FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint);
-		// FVector SpawnLocation = RightSpawnPoint;
-
-		// Spawn emoji
-		AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(EmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
-		if (EmojiActor)
+		const TSubclassOf<AEmojiActor>* FoundEmojiClass = EmojiMap.Find(CurrentEmojiName);
+		if (FoundEmojiClass)
 		{
-			EmojiActor->SetMovementType(AEmojiActor::EEmojiMovementType::Sway);
-			EmojiArray.Add(EmojiActor);
+			FVector SpawnLocation = (FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint);
+
+			AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(*FoundEmojiClass, SpawnLocation, FRotator::ZeroRotator);
+			if (EmojiActor)
+			{
+				EmojiActor->SetMovementType(AEmojiActor::EEmojiMovementType::Sway);
+				EmojiArray.Add(EmojiActor);
+			}
+
+			if (EmojiSpawnSound)
+			{
+				UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
+			}
 		}
-
-		if (EmojiSpawnSound)
+		else
 		{
-			UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
+			UE_LOG(LogTemp, Warning, TEXT("Emoji with name %s not found."), *CurrentEmojiName);
 		}
 	}
 
 	bIsSpawning = false;
 }
 
-void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName)
+void AEmojiManager::CenterSpawnEmoji()
 {
-	// if (EmojiClassArray.Num() > 0)
-	// {
-	// 	// Randomly select an emoji type
-	// 	int32 Index = FMath::RandRange(0, CenterEmojiClassArray.Num() - 1);
-	// 	FVector SpawnLocation = CenterSpawnPoint;
-	//
-	// 	// Spawn emoji	
-	// 	ACenterEmojiActor* CenterEmojiActor = GetWorld()->SpawnActor<ACenterEmojiActor>(CenterEmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
-	// 	CenterEmojiArray.Add(CenterEmojiActor);
-	// }
-
 	UWorld* World = GetWorld();
 	check(World);
-	
+
 	if (EmojiClassArray.Num() > 0)
 	{
-		// Randomly select an emoji type
-		int32 Index = FMath::RandRange(0, EmojiClassArray.Num() - 1);
-		FVector SpawnLocation = CenterSpawnPoint;
-
-		// Spawn emoji
-		AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(EmojiClassArray[Index], SpawnLocation, FRotator::ZeroRotator);
-		if (EmojiActor)
+		const TSubclassOf<AEmojiActor>* FoundEmojiClass = EmojiMap.Find(CurrentEmojiName);
+		if (FoundEmojiClass)
 		{
-			EmojiActor->SetMovementType(AEmojiActor::EEmojiMovementType::StraightUp);
-			EmojiArray.Add(EmojiActor);
+			FVector SpawnLocation = CenterSpawnPoint;
+
+			// Spawn emoji
+			AEmojiActor* EmojiActor = GetWorld()->SpawnActor<AEmojiActor>(*FoundEmojiClass, SpawnLocation, FRotator::ZeroRotator);
+			if (EmojiActor)
+			{
+				EmojiActor->SetMovementType(AEmojiActor::EEmojiMovementType::StraightUp);
+				EmojiArray.Add(EmojiActor);
+			}
+
+			if (CenterEmojiSpawnSound)
+			{
+				UGameplayStatics::PlaySound2D(GetWorld(), CenterEmojiSpawnSound);
+			}
 		}
-
-		if (CenterEmojiSpawnSound)
+		else
 		{
-			UGameplayStatics::PlaySound2D(GetWorld(), CenterEmojiSpawnSound);
+			UE_LOG(LogTemp, Warning, TEXT("Emoji with name %s not found."), *CurrentEmojiName);
 		}
 	}
-
+	
 	bIsSpawning = false;
 }
 
