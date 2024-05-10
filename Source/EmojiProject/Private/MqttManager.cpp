@@ -186,7 +186,8 @@ void AMqttManager::ParseMessage(const FString& Message)
 {
 	PId = FString();
 	Emoji = FString();			// Map 또는 Array로 관리 
-	Special = FString();		// true / false에 반응 
+	Special = FString();		// true / false에 반응
+	Power = FString();			// true / false에 반응
 	// Text = FString();
 	// ImageURL = FString();
 	// CallbackURL = FString();
@@ -407,26 +408,26 @@ bool AMqttManager::HasMessage() const
 	return (bIsLoading == false) && (MqttMessageArray.Num() > 0);
 }
 
-void AMqttManager::RequestEmojiData()	// 이 함수 필요없음 
-{
-	// FScopeLock Lock(&DataGuard);			// 두 작업 동시에 진행하지 않도록 lock해주는 기능 
-
-	FString CurrentMessage = MqttMessageArray[0];
-	MqttMessageArray.RemoveAt(0);
-
-	ParseMessage(CurrentMessage);
-
-	// if (ImageURL.IsEmpty() == false)
-	// {
-	// 	RequestHTTP(ImageURL);
-	// }
-	// else
-	// {
-	// 	EmojiManager->SpawnEmoji();
-	// }
-
-	EmojiManager->SpawnEmoji();
-}
+// void AMqttManager::RequestEmojiData()	// 이 함수 필요없음 
+// {
+// 	// FScopeLock Lock(&DataGuard);			// 두 작업 동시에 진행하지 않도록 lock해주는 기능 
+//
+// 	FString CurrentMessage = MqttMessageArray[0];
+// 	MqttMessageArray.RemoveAt(0);
+//
+// 	ParseMessage(CurrentMessage);
+//
+// 	// if (ImageURL.IsEmpty() == false)
+// 	// {
+// 	// 	RequestHTTP(ImageURL);
+// 	// }
+// 	// else
+// 	// {
+// 	// 	EmojiManager->SpawnEmoji();
+// 	// }
+//
+// 	EmojiManager->SpawnEmoji();
+// }
 
 // // 이 부분도 바꿔야 함 
 // TArray<uint8> AMqttManager::FStringToUint8(const FString& InString)		// 여기도 필요 없음 

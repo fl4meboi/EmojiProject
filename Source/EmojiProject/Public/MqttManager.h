@@ -122,8 +122,8 @@ public:
 
 	bool HasMessage() const;
 
-	// 이모지는 입력 받자마자 바로 실행해야 하기 때문에 여기 함수는 필요 없음 
-	void RequestEmojiData();
+	// // 이모지는 입력 받자마자 바로 실행해야 하기 때문에 여기 함수는 필요 없음 
+	// void RequestEmojiData();
 
 	// 이 부분도 바꿔야 함 
 	// TArray<uint8> FStringToUint8(const FString& InString);
@@ -149,6 +149,7 @@ private:
 	FString PId;
 	FString Emoji;
 	FString Special;
+	FString Power;
 	// FString Text;
 	// FString ImageURL;
 	// FString CallbackURL;

@@ -51,7 +51,7 @@ void AEmojiManager::Tick(float DeltaTime)
 	{
 		bIsSpawning = true;
 
-		MqttManager->RequestEmojiData();
+		// MqttManager->RequestEmojiData();
 	}
 }
 
