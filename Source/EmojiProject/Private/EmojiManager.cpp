@@ -8,6 +8,7 @@
 #include "EmojiGameInstance.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
+// #include "UE4Library/NotificationType.Pregenerated.h"
 
 // Sets default values
 AEmojiManager::AEmojiManager()
@@ -45,22 +46,22 @@ void AEmojiManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bIsLoading || bIsSpawning) return;
+	// if (bIsLoading || bIsSpawning) return;
 
-	if (MqttManager && MqttManager->HasMessage())
-	{
-		bIsSpawning = true;
-
-		// MqttManager->RequestEmojiData();
-		// Spawn 코드를 써야 함!
-		SpawnEmoji();
-	}
+	// if (MqttManager && MqttManager->HasMessage())
+	// {
+	// 	// bIsSpawning = true;
+	//
+	// 	// MqttManager->RequestEmojiData();
+	// 	// Spawn 코드를 써야 함!
+	// 	SpawnEmoji();
+	// }
 }
 
-void AEmojiManager::SetCurrentEmoji(const FString& EmojiName)
-{
-	CurrentEmojiName = EmojiName;
-}
+// void AEmojiManager::SetCurrentEmoji(const FString& EmojiName)
+// {
+// 	CurrentEmojiName = EmojiName;
+// }
 
 FString AEmojiManager::GetRandomEmojiName()
 {
@@ -78,14 +79,14 @@ FString AEmojiManager::GetRandomEmojiName()
 	return FString();	// Return an empty string if the map is empty
 }
 
-void AEmojiManager::SpawnEmoji()
+void AEmojiManager::SpawnEmoji(FString EmojiName)
 {
 	UWorld* World = GetWorld();
 	check(World);
 		
-	if (EmojiClassArray.Num() > 0)
+	if (EmojiMap.Num() > 0)
 	{
-		const TSubclassOf<AEmojiActor>* FoundEmojiClass = EmojiMap.Find(CurrentEmojiName);
+		const TSubclassOf<AEmojiActor>* FoundEmojiClass = EmojiMap.Find(EmojiName);
 		if (FoundEmojiClass)
 		{
 			FVector SpawnLocation = (FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint);
@@ -104,21 +105,21 @@ void AEmojiManager::SpawnEmoji()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Emoji with name %s not found."), *CurrentEmojiName);
+			UE_LOG(LogTemp, Warning, TEXT("Emoji with name %s not found."), *EmojiName);
 		}
 	}
 
-	bIsSpawning = false;
+	// bIsSpawning = false;
 }
 
-void AEmojiManager::CenterSpawnEmoji()
+void AEmojiManager::CenterSpawnEmoji(FString EmojiName)
 {
 	UWorld* World = GetWorld();
 	check(World);
 
-	if (EmojiClassArray.Num() > 0)
+	if (EmojiMap.Num() > 0)
 	{
-		const TSubclassOf<AEmojiActor>* FoundEmojiClass = EmojiMap.Find(CurrentEmojiName);
+		const TSubclassOf<AEmojiActor>* FoundEmojiClass = EmojiMap.Find(EmojiName);
 		if (FoundEmojiClass)
 		{
 			FVector SpawnLocation = CenterSpawnPoint;
@@ -138,11 +139,30 @@ void AEmojiManager::CenterSpawnEmoji()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Emoji with name %s not found."), *CurrentEmojiName);
+			UE_LOG(LogTemp, Warning, TEXT("Emoji with name %s not found."), *EmojiName);
 		}
 	}
 	
-	bIsSpawning = false;
+	// bIsSpawning = false;
+}
+
+void AEmojiManager::SideOrCenter(bool bIsCenter, FString EmojiName)
+{
+	// MqttManager->ParseMessage(const FString& Message);
+	if (bIsCenter)
+	{
+		CenterSpawnEmoji(EmojiName);
+	}
+	else
+	{
+		SpawnEmoji(EmojiName);
+	}
+}
+
+void AEmojiManager::ShowEmoji(bool bIsShow)
+{
+	// MqttManager에서 power true/false push 받으면
+	// 돌면서 visibility 
 }
 
 // void AEmojiManager::RemoveAllEmoji()
@@ -159,25 +179,25 @@ const TArray<AEmojiActor*>& AEmojiManager::GetEmojiArray() const
 	return EmojiArray;
 }
 
-void AEmojiManager::LoadEmoji(TArray<FEmojiData>& EmojiDataArray)
-{
-	UWorld* World = GetWorld();
-	check(World);
-
-	FActorSpawnParameters Params;
-	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	for (auto EmojiData : EmojiDataArray)
-	{
-		AEmojiActor* Emoji = World->SpawnActor<AEmojiActor>(EmojiClassArray[EmojiData.VariationIndex],
-			GetActorLocation(), GetActorRotation() + FRotator(0, 180, 0), Params);
-
-		// Emoji Data 갱신
-		// Emoji->
-
-		
-	}
-}
+// void AEmojiManager::LoadEmoji(TArray<FEmojiData>& EmojiDataArray)		// 필요없음 
+// {
+// 	UWorld* World = GetWorld();
+// 	check(World);
+//
+// 	FActorSpawnParameters Params;
+// 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+//
+// 	for (auto EmojiData : EmojiDataArray)
+// 	{
+// 		AEmojiActor* Emoji = World->SpawnActor<AEmojiActor>(EmojiClassArray[EmojiData.VariationIndex],
+// 			GetActorLocation(), GetActorRotation() + FRotator(0, 180, 0), Params);
+//
+// 		// Emoji Data 갱신
+// 		// Emoji->
+//
+// 		
+// 	}
+// }
 
 // void AEmojiManager::ToggleVisibility()
 // {

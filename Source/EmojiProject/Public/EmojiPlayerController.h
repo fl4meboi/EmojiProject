@@ -20,6 +20,9 @@ protected:
 	// void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 	virtual void SetupInputComponent() override;
 
+	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable)
 	void SpawnEmoji();
 
 private:
@@ -27,7 +30,8 @@ private:
 
 	// UPROPERTY(EditAnywhere)
 	// UInputAction* IE_Spawn;
+	
 
-	FString CurrentEmojiName;  // Stores the current emoji name to spawn	
+	// FString CurrentEmojiName;  // Stores the current emoji name to spawn	
 	
 };

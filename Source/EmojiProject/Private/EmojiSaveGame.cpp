@@ -33,7 +33,7 @@ void UEmojiSaveGame::SaveEmojiArray(const TArray<AEmojiActor*>& EmojiArray)
 
 void UEmojiSaveGame::LoadEmojiArray(AEmojiManager* EmojiManager)
 {
-	EmojiManager->LoadEmoji(EmojiDataArray);
+	// EmojiManager->LoadEmoji(EmojiDataArray);
 	EmojiDataArray.Empty();
 }
 

@@ -34,12 +34,16 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	// void SpawnEmojiAtLocation(const FVector& SpawnLocation);
-	void SpawnEmoji();
+	void SpawnEmoji(FString EmojiName);
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
-	void CenterSpawnEmoji();
+	void CenterSpawnEmoji(FString EmojiName);
 
-	void SetCurrentEmoji(const FString& EmojiName);
+	void SideOrCenter(bool bIsCenter, FString EmojiName);
+
+	void ShowEmoji(bool bIsShow);
+
+	// void SetCurrentEmoji(const FString& EmojiName);
 
 	FString GetRandomEmojiName();
 	
@@ -48,7 +52,7 @@ public:
 
 	const TArray<AEmojiActor*>& GetEmojiArray() const;
 
-	void LoadEmoji(TArray<FEmojiData>& EmojiDataArray);
+	// void LoadEmoji(TArray<FEmojiData>& EmojiDataArray);
 
 	// void ToggleVisibility();
 
@@ -66,14 +70,14 @@ protected:
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
 	FVector CenterSpawnPoint;
 
-	UPROPERTY(EditAnywhere, Category = "Emoji")
-	TArray<TSubclassOf<AEmojiActor>> EmojiClassArray;
+	// UPROPERTY(EditAnywhere, Category = "Emoji")
+	// TArray<TSubclassOf<AEmojiActor>> EmojiClassArray;
 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TMap<FString, TSubclassOf<AEmojiActor>> EmojiMap;
 
-	UPROPERTY(VisibleAnywhere, Category = "Emoji")
-	FString CurrentEmojiName;
+	// UPROPERTY(VisibleAnywhere, Category = "Emoji")
+	// FString CurrentEmojiName;
 
 	// UPROPERTY(EditAnywhere, Category = "Emoji")
 	// TArray<TSubclassOf<AEmojiActor>> CenterEmojiClassArray;
@@ -90,10 +94,10 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	AMqttManager* MqttManager;
-	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
-	bool bIsSpawning = true;
-	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
-	bool bIsLoading = false;
+	// UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
+	// bool bIsSpawning = true;
+	// UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
+	// bool bIsLoading = false;
 
 	UPROPERTY()
 	class UEmojiGameInstance* GameInstance;

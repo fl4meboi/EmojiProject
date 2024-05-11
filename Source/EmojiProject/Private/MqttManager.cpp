@@ -211,7 +211,7 @@ void AMqttManager::ParseMessage(const FString& Message)
 			if (HeadObject->GetStringField(TEXT("apicommand")).Compare(TEXT("content")) != 0
 			|| HeadObject->GetStringField(TEXT("apiaction")).Compare(TEXT("emoji")) != 0)
 			{
-				if (HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("push")) != 0)
+				if (HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("push")) == 0)
 				{
 					TSharedPtr<FJsonObject> BodyObject = DataObject->GetObjectField(TEXT("body"));
 					if (BodyObject.IsValid())
@@ -219,17 +219,20 @@ void AMqttManager::ParseMessage(const FString& Message)
 						PId = BodyObject->GetStringField(TEXT("pid"));
 						Emoji = BodyObject->GetStringField(TEXT("emoji"));
 						Special = BodyObject->GetStringField(TEXT("special"));
+						EmojiManager->SideOrCenter(Special.Compare("true") == 0, Emoji);
 					}
 					return;
 				}
 
-				if (HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("power")) != 0)
+				if (HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("power")) == 0)
 				{
 					TSharedPtr<FJsonObject> BodyObject = DataObject->GetObjectField(TEXT("body"));
 					if (BodyObject.IsValid())
 					{
 						PId = BodyObject->GetStringField(TEXT("pid"));
 						Power = BodyObject->GetStringField(TEXT("power"));
+						EmojiManager->ShowEmoji(Power.Compare("true") == 0);
+						
 					}
 					return;
 				}
@@ -239,8 +242,6 @@ void AMqttManager::ParseMessage(const FString& Message)
 		{
 			return;
 		}
-
-		
 	}
 
 	return;
@@ -374,7 +375,7 @@ void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 		FString EmojiName = EmojiManager->GetRandomEmojiName();
 		if (!EmojiName.IsEmpty())
 		{
-			EmojiManager->SetCurrentEmoji(EmojiName);
+			// EmojiManager->SetCurrentEmoji(EmojiName);
 			EmojiManager = GetWorld()->SpawnActor<AEmojiManager>();
 
 			UE_LOG(LogTemp, Warning, TEXT("OnResponseReceived implemented"));
