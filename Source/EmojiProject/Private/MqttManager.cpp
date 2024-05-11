@@ -358,13 +358,6 @@ void AMqttManager::CallbackHTTP(/* Emoji 종류 입력 변수 */)
 
 void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bConnectedSuccessfully)
 {
-	// if (bConnectedSuccessfully == false)
-	// {
-	// 	FString Content = UTF8_TO_TCHAR(Request->GetContent().GetData());
-	// 	GameInstance->LogToFile((LOGTEXT(TEXT("Image Http Request was failed\nRequest:%s\nResponse:%s"), *Content, *Response->GetContentAsString())));
-	// 	return;
-	// }
-	
 	TSharedPtr<FJsonObject> ResponseObject;
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	FJsonSerializer::Deserialize(Reader, ResponseObject);
@@ -378,19 +371,6 @@ void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 	TSharedPtr<FJsonObject> ResultObject = ResponseObject->GetObjectField(FString("result"));
 	if (ResultObject.IsValid())
 	{
-		// FString DataString = ResultObject->GetStringField(FString("data_b64image"));
-		// FString LeftStr;
-		// DataString.Split(",", &LeftStr, &DataString);
-		// FString ImageFormat;
-		// LeftStr.Split("/", &LeftStr, &ImageFormat);
-		// ImageFormat.Split(";", &ImageFormat, &LeftStr);
-
-		// // Parse the message to extract the EmojiName
-		// FString EmojiName = ParseMessage(const FString& Message);  // Implement this parsing based on your message format
-		//
-		// // Call SpawnEmoji with the parsed name
-		// EmojiManager->SpawnEmoji(EmojiName);
-
 		FString EmojiName = EmojiManager->GetRandomEmojiName();
 		if (!EmojiName.IsEmpty())
 		{
@@ -409,14 +389,6 @@ void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 void AMqttManager::OnCallbackResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response,
 											  bool bConnectedSuccessfully)
 {
-	// if (bConnectedSuccessfully == false)
-	// {
-	// 	FString Content = UTF8_TO_TCHAR(Request->GetContent().GetData());
-	// 	
-	// 	GameInstance->LogToFile(LOGTEXT(TEXT("Callback Http Request was failed\nRequest:%s\nResponse:%s"), *Content, *Response->GetContentAsString()));
-	// 	return;
-	// }
-	
 	TSharedPtr<FJsonObject> ResponseObject;
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	FJsonSerializer::Deserialize(Reader, ResponseObject);
@@ -432,28 +404,19 @@ bool AMqttManager::HasMessage() const
 	return (bIsLoading == false) && (MqttMessageArray.Num() > 0);
 }
 
-void AMqttManager::RequestEmojiData()	// 이 함수 필요없음 
-{
-	// FScopeLock Lock(&DataGuard);			// 두 작업 동시에 진행하지 않도록 lock해주는 기능 
-
-	FString CurrentMessage = MqttMessageArray[0];
-	MqttMessageArray.RemoveAt(0);
-
-	ParseMessage(CurrentMessage);
-
-	// if (ImageURL.IsEmpty() == false)
-	// {
-	// 	RequestHTTP(ImageURL);
-	// }
-	// else
-	// {
-	// 	EmojiManager->SpawnEmoji();
-	// }
-
-	EmojiManager->SpawnEmoji();
-
-	UE_LOG(LogTemp, Warning, TEXT("RequestEmojiData implemented"));
-}
+// void AMqttManager::RequestEmojiData()	// 이 함수 필요없음 
+// {	
+// 	// FScopeLock Lock(&DataGuard);			// 두 작업 동시에 진행하지 않도록 lock해주는 기능 
+//
+// 	FString CurrentMessage = MqttMessageArray[0];
+// 	MqttMessageArray.RemoveAt(0);
+//
+// 	ParseMessage(CurrentMessage);
+//
+// 	EmojiManager->SpawnEmoji();
+//
+// 	UE_LOG(LogTemp, Warning, TEXT("RequestEmojiData implemented"));
+// }
 
 // // 이 부분도 바꿔야 함 
 // TArray<uint8> AMqttManager::FStringToUint8(const FString& InString)		// 여기도 필요 없음 

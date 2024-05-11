@@ -53,7 +53,7 @@ void AEmojiManager::Tick(float DeltaTime)
 
 		// MqttManager->RequestEmojiData();
 		// Spawn 코드를 써야 함!
-		MqttManager->RequestEmojiData();
+		SpawnEmoji();
 	}
 }
 
