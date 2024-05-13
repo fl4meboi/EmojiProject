@@ -95,7 +95,9 @@ void AEmojiManager::SpawnEmoji(FString EmojiName)
 			if (EmojiActor)
 			{
 				EmojiActor->SetMovementType(AEmojiActor::EEmojiMovementType::Sway);
+				EmojiActor->SetActorHiddenInGame(!bIsShown);
 				EmojiArray.Add(EmojiActor);
+				EmojiActor->OnEmojiDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
 			}
 
 			if (EmojiSpawnSound)
@@ -129,7 +131,9 @@ void AEmojiManager::CenterSpawnEmoji(FString EmojiName)
 			if (EmojiActor)
 			{
 				EmojiActor->SetMovementType(AEmojiActor::EEmojiMovementType::StraightUp);
+				EmojiActor->SetActorHiddenInGame(!bIsShown);
 				EmojiArray.Add(EmojiActor);
+				EmojiActor->OnEmojiDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
 			}
 
 			if (CenterEmojiSpawnSound)
@@ -144,6 +148,11 @@ void AEmojiManager::CenterSpawnEmoji(FString EmojiName)
 	}
 	
 	// bIsSpawning = false;
+}
+
+void AEmojiManager::OnEmojiDestroyed(AEmojiActor* DestroyedEmoji)
+{
+	EmojiArray.Remove(DestroyedEmoji);
 }
 
 void AEmojiManager::SideOrCenter(bool bIsCenter, FString EmojiName)
@@ -164,10 +173,19 @@ void AEmojiManager::SideOrCenter(bool bIsCenter, FString EmojiName)
 
 void AEmojiManager::ShowEmoji(bool bShowEmoji)
 {
+	bIsShown = bShowEmoji;
 	// MqttManager에서 power true/false push 받으면
 	// 돌면서 visibility
 	
 	// 이 함수를 BP에서 호출해서 Show 할지를 bool로 결정하자
+
+	for (auto Emoji : EmojiArray)
+	{
+		if (Emoji->IsValidLowLevelFast())
+		{
+			Emoji->SetActorHiddenInGame(!bIsShown);
+		}
+	}
 }
 
 // void AEmojiManager::RemoveAllEmoji()

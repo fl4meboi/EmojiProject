@@ -29,6 +29,7 @@ void AMqttManager::BeginPlay()
 
 	GameInstance = GetGameInstance<UEmojiGameInstance>();
 	check(GameInstance);
+	GameInstance->LogToFile(LOGTEXT(TEXT("Success to get GameInstance")));
 	ConfigMap = GameInstance->GetConfigMap();
 
 	CreateMqttClient();
@@ -246,7 +247,7 @@ void AMqttManager::ParseMessage(const FString& Message)
 						Power = BodyObject->GetStringField(TEXT("power"));
 						EmojiManager->ShowEmoji(Power.Compare("true") == 0);
 
-						UE_LOG(LogTemp, Warning, TEXT("Power body read"));
+						// UE_LOG(LogTemp, Warning, TEXT("Power body read"));
 					}
 					return;
 				}

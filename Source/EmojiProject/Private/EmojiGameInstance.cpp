@@ -220,7 +220,7 @@ void UEmojiGameInstance::SaveEmojiArray(const TArray<AEmojiActor*>& EmojiArray)
 {
 	if (SaveGame)
 	{
-		SaveGame->SaveEmojiArray(EmojiArray);
+		// SaveGame->SaveEmojiArray(EmojiArray);
 		UGameplayStatics::SaveGameToSlot(SaveGame, SlotName, 0);
 	}
 }

@@ -58,6 +58,7 @@ void ALoginPlayerController::OnLoginResponseReceived(FHttpRequestPtr Request, FH
 	{
 		GameInstance->LogToFile(LOGTEXT(TEXT("Success to verification license")));
 		this->ClientTravel(TravelURL, TRAVEL_Absolute);
+		GameInstance->LogToFile(LOGTEXT(TEXT("Success to travel level")));
 	}
 	else
 	{

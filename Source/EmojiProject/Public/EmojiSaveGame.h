@@ -38,7 +38,7 @@ public:
 
 	int32 GetCount() const;
 
-	void SaveEmojiArray(const TArray<AEmojiActor*>& EmojiArray);
+	// void SaveEmojiArray(const TArray<AEmojiActor*>& EmojiArray);
 
 	void LoadEmojiArray(class AEmojiManager* EmojiManager);
 

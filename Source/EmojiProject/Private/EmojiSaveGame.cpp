@@ -16,20 +16,20 @@ int32 UEmojiSaveGame::GetCount() const
 	return TestCount;
 }
 
-void UEmojiSaveGame::SaveEmojiArray(const TArray<AEmojiActor*>& EmojiArray)
-{
-	for (auto Emoji : EmojiArray)
-	{
-		Emoji->SetEmojiArrayIndex(EmojiArray);
-	}
-	for (auto Emoji : EmojiArray)
-	{
-		FEmojiData EmojiData;
-		Emoji->SaveData(EmojiData);
-
-		EmojiDataArray.Add(EmojiData);
-	}
-}
+// void UEmojiSaveGame::SaveEmojiArray(const TArray<AEmojiActor*>& EmojiArray)
+// {
+// 	for (auto Emoji : EmojiArray)
+// 	{
+// 		Emoji->SetEmojiArrayIndex(EmojiArray);
+// 	}
+// 	for (auto Emoji : EmojiArray)
+// 	{
+// 		FEmojiData EmojiData;
+// 		Emoji->SaveData(EmojiData);
+//
+// 		EmojiDataArray.Add(EmojiData);
+// 	}
+// }
 
 void UEmojiSaveGame::LoadEmojiArray(AEmojiManager* EmojiManager)
 {

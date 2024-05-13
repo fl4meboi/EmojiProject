@@ -39,6 +39,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	void CenterSpawnEmoji(FString EmojiName);
 
+	void OnEmojiDestroyed(AEmojiActor* DestroyedEmoji);
+
 	void SideOrCenter(bool bIsCenter, FString EmojiName);
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
@@ -116,6 +118,8 @@ private:
 	USoundBase* EmojiSpawnSound;
 	UPROPERTY(EditDefaultsOnly, Meta = (AllowPrivateAccess))
 	USoundBase* CenterEmojiSpawnSound;
+
+	bool bIsShown = true;
 };
 
 

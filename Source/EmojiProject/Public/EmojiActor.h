@@ -37,6 +37,8 @@ public:
 
 	void Init(int32 NewVariationIndex);
 
+	// 원래는 SaveGame에서 EmojiArray의 index를 찾으려고 썼던 함수인데,
+	// 지금은 ShowEmoji 함수에 사용하기 위해 용도 변경 
 	void SetEmojiArrayIndex(const TArray<AEmojiActor*>& EmojiArray);
 	int32 GetEmojiArrayIndex() const;
 	
@@ -58,7 +60,7 @@ public:
 
 	// Location Limit
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float TargetHeight = 1300.f;
+	float TargetHeight = 5000.f;
 
 	// Speeds
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
@@ -78,13 +80,24 @@ public:
 
 	// Set movement type method
 	void SetMovementType(EEmojiMovementType NewType);
+
+	UFUNCTION(BlueprintCallable)
+	void DestroyEvent();
 	
 	// 개별 변수
 	int32 VariationIndex = 0;
+
+	UPROPERTY(BlueprintReadOnly)
 	int32 EmojiArrayIndex = 0;
+
+	// TArray<AEmojiActor*>* EmojiActorArrayPtr;
 
 protected:
 	FVector CurrentScale;
 	FVector TargetScale;
 	float ScaleSpeed;
+
+public:
+	DECLARE_DELEGATE_OneParam(FDele_AEmojiActorPtr, AEmojiActor*);
+	FDele_AEmojiActorPtr OnEmojiDestroyed;
 };

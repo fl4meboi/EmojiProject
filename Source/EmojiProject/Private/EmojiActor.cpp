@@ -96,6 +96,7 @@ void AEmojiActor::Init(int32 NewVariationIndex)
 void AEmojiActor::SetEmojiArrayIndex(const TArray<AEmojiActor*>& EmojiArray)
 {
 	EmojiArrayIndex = EmojiArray.Find(this);
+	// EmojiActorArrayPtr = &EmojiArray;
 }
 
 int32 AEmojiActor::GetEmojiArrayIndex() const
@@ -125,5 +126,10 @@ void AEmojiActor::SetMovementType(EEmojiMovementType NewType)
 
 	// Set speed based on movement type
 	SetEmojiSpeed();
+}
+
+void AEmojiActor::DestroyEvent()
+{
+	OnEmojiDestroyed.ExecuteIfBound(this);
 }
 
