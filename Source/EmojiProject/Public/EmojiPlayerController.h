@@ -25,6 +25,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void SpawnEmoji();
 
+	UFUNCTION(BlueprintCallable)
+	void CenterSpawnEmoji();
+
 private:
 	AEmojiManager* EmojiManager;
 

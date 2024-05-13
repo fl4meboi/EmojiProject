@@ -176,8 +176,10 @@ void AMqttManager::OnMessage(const FString& Topic, const FString& Message)
 	// MqttMessageArray.Add(Message);
 	// 원래 메시지를 받고 저장하는 과정. 이번에는 저장할 핊요 없이 메시지 받자마자 바로 실행
 
+	UE_LOG(LogTemp, Warning, TEXT("Mqtt OnMessage"));
 	// 바로 반응하기 
 	ParseMessage(Message);
+	UE_LOG(LogTemp, Warning, TEXT("ParseMessage called"));		// ParseMessage가 끝나고 나서 찍히는 로그 
 
 	// Parsing한 데이터를 가지고 EmojiManager에게 Spawn 요청 
 }
@@ -185,12 +187,14 @@ void AMqttManager::OnMessage(const FString& Topic, const FString& Message)
 void AMqttManager::ParseMessage(const FString& Message)
 {
 	PId = FString();
-	Emoji = FString();			// Map 또는 Array로 관리 
+	Emoji = FString();			// Map으로 관리 
 	Special = FString();		// true / false에 반응
 	Power = FString();			// true / false에 반응
 	// Text = FString();
 	// ImageURL = FString();
 	// CallbackURL = FString();
+
+	UE_LOG(LogTemp, Warning, TEXT("ParseMessage call"));
 
 	TSharedPtr<FJsonObject> MessageObject;
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Message);
@@ -205,34 +209,44 @@ void AMqttManager::ParseMessage(const FString& Message)
 	TSharedPtr<FJsonObject> DataObject = MessageObject->GetObjectField(TEXT("data"));
 	if (DataObject.IsValid())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("DataObject valid"));
 		TSharedPtr<FJsonObject> HeadObject = DataObject->GetObjectField(TEXT("head"));
 		if (HeadObject.IsValid())
 		{
-			if (HeadObject->GetStringField(TEXT("apicommand")).Compare(TEXT("content")) != 0
-			|| HeadObject->GetStringField(TEXT("apiaction")).Compare(TEXT("emoji")) != 0)
+			UE_LOG(LogTemp, Warning, TEXT("HeadObject valid"));
+			if (HeadObject->GetStringField(TEXT("apicommand")).Compare(TEXT("content")) == 0
+			|| HeadObject->GetStringField(TEXT("apiaction")).Compare(TEXT("emoji")) == 0)	
 			{
+				UE_LOG(LogTemp, Warning, TEXT("apicommand, apiaction read"));		// 현재 여기서부터 실행 안되고 지나침
 				if (HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("push")) == 0)
 				{
+					UE_LOG(LogTemp, Warning, TEXT("Push body called"));
 					TSharedPtr<FJsonObject> BodyObject = DataObject->GetObjectField(TEXT("body"));
 					if (BodyObject.IsValid())
 					{
+						UE_LOG(LogTemp, Warning, TEXT("BodyObject valid"));
 						PId = BodyObject->GetStringField(TEXT("pid"));
 						Emoji = BodyObject->GetStringField(TEXT("emoji"));
 						Special = BodyObject->GetStringField(TEXT("special"));
 						EmojiManager->SideOrCenter(Special.Compare("true") == 0, Emoji);
+
+						UE_LOG(LogTemp, Warning, TEXT("Push body read"));
 					}
 					return;
 				}
 
 				if (HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("power")) == 0)
 				{
+					UE_LOG(LogTemp, Warning, TEXT("Power body called"));
 					TSharedPtr<FJsonObject> BodyObject = DataObject->GetObjectField(TEXT("body"));
 					if (BodyObject.IsValid())
 					{
+						UE_LOG(LogTemp, Warning, TEXT("BodyObject valid"));
 						PId = BodyObject->GetStringField(TEXT("pid"));
 						Power = BodyObject->GetStringField(TEXT("power"));
 						EmojiManager->ShowEmoji(Power.Compare("true") == 0);
-						
+
+						UE_LOG(LogTemp, Warning, TEXT("Power body read"));
 					}
 					return;
 				}
@@ -363,6 +377,8 @@ void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	FJsonSerializer::Deserialize(Reader, ResponseObject);
 
+	UE_LOG(LogTemp, Warning, TEXT("OnResponseReceived implemented"));
+	
 	if (ResponseObject->GetStringField(TEXT("status")).Compare(TEXT("00200")) != 0)
 	{
 		GameInstance->LogToFile(LOGTEXT(TEXT("Image HTTP Response status is invalid. Status is %s"), *ResponseObject->GetStringField(TEXT("status"))));
@@ -376,9 +392,12 @@ void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 		if (!EmojiName.IsEmpty())
 		{
 			// EmojiManager->SetCurrentEmoji(EmojiName);
-			EmojiManager = GetWorld()->SpawnActor<AEmojiManager>();
+			// EmojiManager = GetWorld()->SpawnActor<AEmojiManager>();		// ?? 왜 EmojiManager를 또 소환해?
 
-			UE_LOG(LogTemp, Warning, TEXT("OnResponseReceived implemented"));
+			// Special이 true이면
+			EmojiManager->SpawnEmoji(EmojiName);
+
+			UE_LOG(LogTemp, Warning, TEXT("Emoji implemented"));
 		}
 	}
 	else

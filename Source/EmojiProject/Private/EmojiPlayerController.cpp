@@ -9,6 +9,7 @@ void AEmojiPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAction("IE_Spawn", IE_Pressed, this, &AEmojiPlayerController::SpawnEmoji);
+	InputComponent->BindAction("IE_CenterSpawn", IE_Pressed, this, &AEmojiPlayerController::CenterSpawnEmoji);
 	
 }
 
@@ -16,8 +17,8 @@ void AEmojiPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TActorIterator<AEmojiManager> It(GetWorld());		// world에서 EmojiManager 찾는 코드
-	EmojiManager = *It;		// EmojiManager의 실체를 넣어주기 
+	TActorIterator<AEmojiManager> It(GetWorld());		// World에서 EmojiManager 찾는 코드
+	EmojiManager = *It;									// EmojiManager의 실체를 넣어주기 
 	
 	
 }
@@ -40,6 +41,16 @@ void AEmojiPlayerController::SpawnEmoji()
 		// EmojiManager->SetCurrentEmoji(EmojiName);	// SetCurrentEmoji 함수도 필요 없음 
 		EmojiManager->SpawnEmoji(EmojiName);
 		
+	}
+}
+
+void AEmojiPlayerController::CenterSpawnEmoji()
+{
+	UE_LOG(LogTemp, Warning, TEXT("CenterSpawnEmoji"));
+	FString EmojiName = EmojiManager->GetRandomEmojiName();
+	if (!EmojiName.IsEmpty())
+	{
+		EmojiManager->CenterSpawnEmoji(EmojiName);
 	}
 }
 

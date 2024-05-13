@@ -152,10 +152,13 @@ void AEmojiManager::SideOrCenter(bool bIsCenter, FString EmojiName)
 	if (bIsCenter)
 	{
 		CenterSpawnEmoji(EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("CenterSpawned with Mqtt"));
+
 	}
 	else
 	{
 		SpawnEmoji(EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("SideSpawned with Mqtt"));
 	}
 }
 
