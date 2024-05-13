@@ -217,7 +217,7 @@ void AMqttManager::ParseMessage(const FString& Message)
 			if (HeadObject->GetStringField(TEXT("apicommand")).Compare(TEXT("content")) == 0
 			|| HeadObject->GetStringField(TEXT("apiaction")).Compare(TEXT("emoji")) == 0)	
 			{
-				UE_LOG(LogTemp, Warning, TEXT("apicommand, apiaction read"));		// 현재 여기서부터 실행 안되고 지나침
+				UE_LOG(LogTemp, Warning, TEXT("apicommand, apiaction read"));	
 				if (HeadObject->GetStringField(TEXT("apimethod")).Compare(TEXT("push")) == 0)
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Push body called"));

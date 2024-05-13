@@ -41,7 +41,8 @@ public:
 
 	void SideOrCenter(bool bIsCenter, FString EmojiName);
 
-	void ShowEmoji(bool bIsShow);
+	UFUNCTION(BlueprintCallable, Category = "Emoji")
+	void ShowEmoji(bool bShowEmoji);
 
 	// void SetCurrentEmoji(const FString& EmojiName);
 

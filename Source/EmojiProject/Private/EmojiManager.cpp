@@ -162,10 +162,12 @@ void AEmojiManager::SideOrCenter(bool bIsCenter, FString EmojiName)
 	}
 }
 
-void AEmojiManager::ShowEmoji(bool bIsShow)
+void AEmojiManager::ShowEmoji(bool bShowEmoji)
 {
 	// MqttManager에서 power true/false push 받으면
-	// 돌면서 visibility 
+	// 돌면서 visibility
+	
+	// 이 함수를 BP에서 호출해서 Show 할지를 bool로 결정하자
 }
 
 // void AEmojiManager::RemoveAllEmoji()

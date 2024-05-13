@@ -65,6 +65,8 @@ void AEmojiActor::Tick(float DeltaTime)
 	{
 		Destroy();
 	}
+
+	// Fade to transparent
 }
 
 void AEmojiActor::SetEmojiSpeed()
@@ -101,6 +103,16 @@ int32 AEmojiActor::GetEmojiArrayIndex() const
 	return EmojiArrayIndex;
 }
 
+void AEmojiActor::VisibilityOn()
+{
+	CapsuleComponent->SetVisibility(true);
+}
+
+void AEmojiActor::VisibilityOff()
+{
+	CapsuleComponent->SetVisibility(false);
+}
+
 void AEmojiActor::SaveData(FEmojiData& EmojiData)
 {
 	EmojiData.VariationIndex = VariationIndex;
@@ -114,6 +126,4 @@ void AEmojiActor::SetMovementType(EEmojiMovementType NewType)
 	// Set speed based on movement type
 	SetEmojiSpeed();
 }
-
-// Mqtt로 받은 사용자가 정한 Emoji에 대한 정보를 받아서 특정 Emoji를 띄워주는 함수 
 

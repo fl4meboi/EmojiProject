@@ -39,6 +39,9 @@ public:
 
 	void SetEmojiArrayIndex(const TArray<AEmojiActor*>& EmojiArray);
 	int32 GetEmojiArrayIndex() const;
+	
+	void VisibilityOn();
+	void VisibilityOff();
 
 	// Save
 	void SaveData(FEmojiData& EmojiData);
