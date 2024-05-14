@@ -58,9 +58,9 @@ public:
 	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	// UPaperFlipbook* PaperFlipbook;
 
-	// Location Limit
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float TargetHeight = 5000.f;
+	// Location Limit   -> 이제 안 씀 (Emoji fade를 초로 관리하기로)
+	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	// float TargetHeight = 5000.f;
 
 	// Speeds
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)

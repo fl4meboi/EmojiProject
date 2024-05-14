@@ -61,10 +61,10 @@ void AEmojiActor::Tick(float DeltaTime)
 		SetActorScale3D(CurrentScale);
 	}
 
-	if (Location.Z >= TargetHeight)
-	{
-		Destroy();
-	}
+	// if (Location.Z >= TargetHeight)
+	// {
+	// 	Destroy();
+	// }
 
 	// Fade to transparent
 }
