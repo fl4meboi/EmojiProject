@@ -98,10 +98,6 @@ void AEmojiManager::SpawnEmoji(FString EmojiName)
 				EmojiActor->SetActorHiddenInGame(!bIsShown);
 				EmojiArray.Add(EmojiActor);
 				EmojiActor->OnEmojiDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
-			}
-
-			if (EmojiSpawnSound)
-			{
 				UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
 			}
 		}
@@ -134,10 +130,6 @@ void AEmojiManager::CenterSpawnEmoji(FString EmojiName)
 				EmojiActor->SetActorHiddenInGame(!bIsShown);
 				EmojiArray.Add(EmojiActor);
 				EmojiActor->OnEmojiDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
-			}
-
-			if (CenterEmojiSpawnSound)
-			{
 				UGameplayStatics::PlaySound2D(GetWorld(), CenterEmojiSpawnSound);
 			}
 		}
