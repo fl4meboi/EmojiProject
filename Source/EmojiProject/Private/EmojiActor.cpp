@@ -72,12 +72,12 @@ void AEmojiActor::Tick(float DeltaTime)
 void AEmojiActor::SetEmojiSpeed()
 {
 	// Default speed for side-spawning emojis
-	FloatSpeed = 370.f;
+	FloatSpeed = 250.f;
 
 	// Check movement type to adjust speed
 	if (MovementType == EEmojiMovementType::StraightUp)
 	{
-		FloatSpeed = 100.f;
+		FloatSpeed = 90.f;
 	}
 }
 
