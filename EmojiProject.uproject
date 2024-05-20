@@ -44,6 +44,10 @@
 			"Name": "TransparentWindows",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/491179a33a48487581e958e963c2868c"
+		},
+		{
+			"Name": "ElectraPlayer",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
