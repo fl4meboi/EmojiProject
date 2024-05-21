@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EmojiActor.h"
+// #include "EmojiActor.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/CanvasPanel.h"
 #include "GameFramework/Actor.h"
 #include "EmojiManager.generated.h"
 
@@ -29,30 +31,32 @@ class EMOJIPROJECT_API AEmojiManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AEmojiManager();
+	
+	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
-	void SpawnEmoji(FString EmojiName);
+	void SpawnEmoji(const FString& EmojiName, const FVector2D& SpawnPosition);
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
-	void CenterSpawnEmoji(FString EmojiName);
+	void CenterSpawnEmoji(const FString& EmojiName);
 
-	void OnEmojiDestroyed(AEmojiActor* DestroyedEmoji);
+	void OnEmojiDestroyed(UUserWidget* DestroyedEmoji);
 
-	void SideOrCenter(bool bIsCenter, FString EmojiName);
+	void SideOrCenter(bool bIsCenter, const FString& EmojiName);
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	void ShowEmoji(bool bShowEmoji);
 	
 	FString GetRandomEmojiName();
 	
-	const TArray<AEmojiActor*>& GetEmojiArray() const;
+	const TArray<UUserWidget*>& GetEmojiArray() const;
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
+
+	// Spawn points
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
 	FVector LeftSpawnPoint;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
@@ -61,29 +65,34 @@ protected:
 	FVector CenterSpawnPoint;
 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
-	TMap<FString, TSubclassOf<AEmojiActor>> EmojiMap;
+	TMap<FString, TSubclassOf<UUserWidget>> EmojiWidgetMap;
 
 private:
+	UPROPERTY(EditAnywhere, Category = "Emoji")
+	TSubclassOf<UUserWidget> EmojiManagerWidgetClass;
+
 	UPROPERTY()
-	TArray<AEmojiActor*> EmojiArray;
+	UUserWidget* EmojiManagerWidget;
+
+	UPROPERTY()
+	UCanvasPanel* EmojiCanvas;
+	
+	UPROPERTY()
+	TArray<UUserWidget*> EmojiArray;
 	
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	AMqttManager* MqttManager;
-	// UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
-	// bool bIsSpawning = true;
-	// UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
-	// bool bIsLoading = false;
 
 	UPROPERTY()
 	class UEmojiGameInstance* GameInstance;
 
-	// Speeds
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
-	float FloatSpeed = 400.f;
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
-	float SwayAmount = 2.f;
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
-	float SwaySpeed = 2.f;
+	// Speeds		// Not using 
+	// UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	// float FloatSpeed = 400.f;
+	// UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	// float SwayAmount = 2.f;
+	// UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	// float SwaySpeed = 2.f;
 
 	// Sound
 	UPROPERTY(EditDefaultsOnly, Meta = (AllowPrivateAccess))

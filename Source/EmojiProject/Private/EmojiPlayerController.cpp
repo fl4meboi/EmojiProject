@@ -39,7 +39,7 @@ void AEmojiPlayerController::SpawnEmoji()
 	if (!EmojiName.IsEmpty())
 	{
 		// EmojiManager->SetCurrentEmoji(EmojiName);	// SetCurrentEmoji 함수도 필요 없음 
-		EmojiManager->SpawnEmoji(EmojiName);
+		// EmojiManager->SpawnEmoji(EmojiName);
 		
 	}
 }
@@ -50,7 +50,7 @@ void AEmojiPlayerController::CenterSpawnEmoji()
 	FString EmojiName = EmojiManager->GetRandomEmojiName();
 	if (!EmojiName.IsEmpty())
 	{
-		EmojiManager->CenterSpawnEmoji(EmojiName);
+		// EmojiManager->CenterSpawnEmoji(EmojiName);
 	}
 }
 
