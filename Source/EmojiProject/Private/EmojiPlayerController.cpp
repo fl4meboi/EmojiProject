@@ -23,15 +23,6 @@ void AEmojiPlayerController::BeginPlay()
 	
 }
 
-// void AEmojiPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-// {
-// 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
-// 	if (EnhancedInputComponent)
-// 	{
-// 		EnhancedInputComponent->BindAction(IE_Spawn, ETriggerEvent::Triggered, this, &AEmojiPlayerController::SpawnEmoji);
-// 	}
-// }
-
 void AEmojiPlayerController::SpawnEmoji()
 {
 	UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji"));
@@ -39,7 +30,7 @@ void AEmojiPlayerController::SpawnEmoji()
 	if (!EmojiName.IsEmpty())
 	{
 		// EmojiManager->SetCurrentEmoji(EmojiName);	// SetCurrentEmoji 함수도 필요 없음 
-		// EmojiManager->SpawnEmoji(EmojiName);
+		EmojiManager->SpawnEmoji(EmojiName);
 		
 	}
 }
@@ -50,7 +41,7 @@ void AEmojiPlayerController::CenterSpawnEmoji()
 	FString EmojiName = EmojiManager->GetRandomEmojiName();
 	if (!EmojiName.IsEmpty())
 	{
-		// EmojiManager->CenterSpawnEmoji(EmojiName);
+		EmojiManager->CenterSpawnEmoji(EmojiName);
 	}
 }
 

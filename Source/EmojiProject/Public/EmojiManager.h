@@ -37,7 +37,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
-	void SpawnEmoji(const FString& EmojiName, const FVector2D& SpawnPosition);
+	void SpawnEmoji(const FString& EmojiName);
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	void CenterSpawnEmoji(const FString& EmojiName);
@@ -58,11 +58,11 @@ protected:
 
 	// Spawn points
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
-	FVector LeftSpawnPoint;
+	FVector2D LeftSpawnPoint = FVector2D(500, 540);
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
-	FVector RightSpawnPoint;
+	FVector2D RightSpawnPoint = FVector2D(1460, 540);
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
-	FVector CenterSpawnPoint;
+	FVector2D CenterSpawnPoint = FVector2D(960, 540);
 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TMap<FString, TSubclassOf<UUserWidget>> EmojiWidgetMap;

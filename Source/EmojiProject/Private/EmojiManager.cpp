@@ -94,7 +94,7 @@ FString AEmojiManager::GetRandomEmojiName()
 	return FString();	// Return an empty string if the map is empty
 }
 
-void AEmojiManager::SpawnEmoji(const FString& EmojiName, const FVector2D& SpawnPosition)
+void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 {
 	if (EmojiCanvas && EmojiWidgetMap.Contains(EmojiName))
 	{
@@ -104,6 +104,7 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName, const FVector2D& SpawnP
 			UUserWidget* EmojiWidget = CreateWidget<UUserWidget>(GetWorld(), *FoundEmojiClass);
 			if (EmojiWidget)
 			{
+				FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
 				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
 				if (CanvasSlot)
 				{
@@ -130,8 +131,35 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName, const FVector2D& SpawnP
 
 void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName)
 {
-	FVector2D CenterPosition = FVector2D(400, 400);		// Center position
-	SpawnEmoji(EmojiName, CenterPosition);
+	// FVector2D CenterPosition = FVector2D(400, 400);		// Center position
+	// SpawnEmoji(EmojiName, CenterPosition);
+
+	if (EmojiCanvas && EmojiWidgetMap.Contains(EmojiName))
+	{
+		TSubclassOf<UUserWidget>* FoundEmojiClass = EmojiWidgetMap.Find(EmojiName);
+		if (FoundEmojiClass && *FoundEmojiClass)
+		{
+			UUserWidget* EmojiWidget = CreateWidget<UUserWidget>(GetWorld(), *FoundEmojiClass);
+			if (EmojiWidget)
+			{
+				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
+				if (CanvasSlot)
+				{
+					CanvasSlot->SetPosition(CenterSpawnPoint);
+				}
+
+				EmojiArray.Add(EmojiWidget);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Emoji class for %s not found."), *EmojiName);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Emoji with name %s not found in map or EmojiCanvas is null."), *EmojiName);
+	}
 }
 
 void AEmojiManager::OnEmojiDestroyed(UUserWidget* DestroyedEmoji)
@@ -147,8 +175,7 @@ void AEmojiManager::SideOrCenter(bool bIsCenter, const FString& EmojiName)
 	}
 	else
 	{
-		FVector2D SidePosition = FVector2D(600, 400);
-		SpawnEmoji(EmojiName, SidePosition);
+		SpawnEmoji(EmojiName);
 	}
 }
 
