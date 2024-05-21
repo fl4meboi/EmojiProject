@@ -41,26 +41,12 @@ public:
 	// 지금은 ShowEmoji 함수에 사용하기 위해 용도 변경 
 	void SetEmojiArrayIndex(const TArray<AEmojiActor*>& EmojiArray);
 	int32 GetEmojiArrayIndex() const;
-	
-	void VisibilityOn();
-	void VisibilityOff();
 
 	// Save
 	void SaveData(FEmojiData& EmojiData);
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	UCapsuleComponent* CapsuleComponent;
-	// UPaperFlipbookComponent* FlipbookComponent;
-	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	// class PAPER2UPaperSpriteComponent : public UMeshComponent;
-	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	// UBillboardComponent* FlipbookComponent;
-	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	// UPaperFlipbook* PaperFlipbook;
-
-	// Location Limit   -> 이제 안 씀 (Emoji fade를 초로 관리하기로)
-	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	// float TargetHeight = 5000.f;
 
 	// Speeds
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)

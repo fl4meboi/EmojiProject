@@ -58,11 +58,6 @@ void AEmojiManager::Tick(float DeltaTime)
 	// }
 }
 
-// void AEmojiManager::SetCurrentEmoji(const FString& EmojiName)
-// {
-// 	CurrentEmojiName = EmojiName;
-// }
-
 FString AEmojiManager::GetRandomEmojiName()
 {
 	if (EmojiMap.Num() > 0)
@@ -180,41 +175,7 @@ void AEmojiManager::ShowEmoji(bool bShowEmoji)
 	}
 }
 
-// void AEmojiManager::RemoveAllEmoji()
-// {
-// 	for (int i = 0; i < EmojiArray.Num(); ++i)
-// 	{
-// 		EmojiArray[i]->Destroy();
-// 	}
-// 	EmojiArray.Empty();
-// }
-
 const TArray<AEmojiActor*>& AEmojiManager::GetEmojiArray() const
 {
 	return EmojiArray;
 }
-
-// void AEmojiManager::LoadEmoji(TArray<FEmojiData>& EmojiDataArray)		// 필요없음 
-// {
-// 	UWorld* World = GetWorld();
-// 	check(World);
-//
-// 	FActorSpawnParameters Params;
-// 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-//
-// 	for (auto EmojiData : EmojiDataArray)
-// 	{
-// 		AEmojiActor* Emoji = World->SpawnActor<AEmojiActor>(EmojiClassArray[EmojiData.VariationIndex],
-// 			GetActorLocation(), GetActorRotation() + FRotator(0, 180, 0), Params);
-//
-// 		// Emoji Data 갱신
-// 		// Emoji->
-//
-// 		
-// 	}
-// }
-
-// void AEmojiManager::ToggleVisibility()
-// {
-// 	bool bIsVisible = AEmojiActor->
-// }

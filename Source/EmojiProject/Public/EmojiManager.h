@@ -33,7 +33,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
-	// void SpawnEmojiAtLocation(const FVector& SpawnLocation);
 	void SpawnEmoji(FString EmojiName);
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
@@ -45,27 +44,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	void ShowEmoji(bool bShowEmoji);
-
-	// void SetCurrentEmoji(const FString& EmojiName);
-
+	
 	FString GetRandomEmojiName();
 	
-	// UFUNCTION(BlueprintCallable, Category = "Emoji")
-	// void RemoveAllEmoji();
-
 	const TArray<AEmojiActor*>& GetEmojiArray() const;
-
-	// void LoadEmoji(TArray<FEmojiData>& EmojiDataArray);
-
-	// void ToggleVisibility();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	// UPROPERTY(EditAnywhere, Category = "Emoji")
-	// TArray<TSubclassOf<AEmojiActor>> EmojiTypes;
-
+	
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
 	FVector LeftSpawnPoint;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
@@ -73,28 +60,13 @@ protected:
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
 	FVector CenterSpawnPoint;
 
-	// UPROPERTY(EditAnywhere, Category = "Emoji")
-	// TArray<TSubclassOf<AEmojiActor>> EmojiClassArray;
-
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TMap<FString, TSubclassOf<AEmojiActor>> EmojiMap;
-
-	// UPROPERTY(VisibleAnywhere, Category = "Emoji")
-	// FString CurrentEmojiName;
-
-	// UPROPERTY(EditAnywhere, Category = "Emoji")
-	// TArray<TSubclassOf<AEmojiActor>> CenterEmojiClassArray;
-	
-	// UPROPERTY(EditDefaultsOnly, Category = "Emoji")
-	// TArray<TSubclassOf<class AEmojiActor>> EmojiClassArray;
 
 private:
 	UPROPERTY()
 	TArray<AEmojiActor*> EmojiArray;
-
-	// UPROPERTY()
-	// TArray<AEmojiActor*> CenterEmojiArray;
-
+	
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	AMqttManager* MqttManager;
 	// UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
