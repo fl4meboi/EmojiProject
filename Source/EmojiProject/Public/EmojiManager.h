@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 // #include "EmojiActor.h"
+#include "EmojiWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CanvasPanel.h"
 #include "GameFramework/Actor.h"
@@ -65,7 +66,7 @@ protected:
 	FVector2D CenterSpawnPoint = FVector2D(960, 540);
 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
-	TMap<FString, TSubclassOf<UUserWidget>> EmojiWidgetMap;
+	TMap<FString, UMaterialInterface*> EmojiMaterialMap;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Emoji")

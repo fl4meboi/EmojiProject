@@ -31,7 +31,11 @@ void AEmojiPlayerController::SpawnEmoji()
 	{
 		// EmojiManager->SetCurrentEmoji(EmojiName);	// SetCurrentEmoji 함수도 필요 없음 
 		EmojiManager->SpawnEmoji(EmojiName);
-		
+		UE_LOG(LogTemp, Warning, TEXT("%s spawned"), *EmojiName);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Emoji %s not found"), *EmojiName);
 	}
 }
 
@@ -42,6 +46,11 @@ void AEmojiPlayerController::CenterSpawnEmoji()
 	if (!EmojiName.IsEmpty())
 	{
 		EmojiManager->CenterSpawnEmoji(EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("%s spawned"), *EmojiName);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Emoji %s not found"), *EmojiName);
 	}
 }
 

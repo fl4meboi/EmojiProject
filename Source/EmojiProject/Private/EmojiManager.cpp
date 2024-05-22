@@ -65,26 +65,16 @@ void AEmojiManager::BeginPlay()
 void AEmojiManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// if (bIsLoading || bIsSpawning) return;
-
-	// if (MqttManager && MqttManager->HasMessage())
-	// {
-	// 	// bIsSpawning = true;
-	//
-	// 	// MqttManager->RequestEmojiData();
-	// 	// Spawn 코드를 써야 함!
-	// 	SpawnEmoji();
-	// }
+	
 }
 
 FString AEmojiManager::GetRandomEmojiName()
 {
-	if (EmojiWidgetMap.Num() > 0)
+	if (EmojiMaterialMap.Num() > 0)
 	{
 		// Get all keys from the map
 		TArray<FString> Keys;
-		EmojiWidgetMap.GetKeys(Keys);
+		EmojiMaterialMap.GetKeys(Keys);
 
 		// Select a random key
 		int32 RandomIndex = FMath::RandRange(0, Keys.Num() - 1);
@@ -96,26 +86,35 @@ FString AEmojiManager::GetRandomEmojiName()
 
 void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 {
-	if (EmojiCanvas && EmojiWidgetMap.Contains(EmojiName))
+	if (EmojiCanvas && EmojiMaterialMap.Contains(EmojiName))
 	{
-		TSubclassOf<UUserWidget>* FoundEmojiClass = EmojiWidgetMap.Find(EmojiName);
-		if (FoundEmojiClass && *FoundEmojiClass)
+		UMaterialInterface* FoundEmojiMaterial = EmojiMaterialMap[EmojiName];
+		if (FoundEmojiMaterial)
 		{
-			UUserWidget* EmojiWidget = CreateWidget<UUserWidget>(GetWorld(), *FoundEmojiClass);
-			if (EmojiWidget)
+			UUserWidget* CreatedWidget = CreateWidget<UEmojiWidget>(GetWorld(), UEmojiWidget::StaticClass());
+			if (CreatedWidget)
 			{
-				FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
-				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
-				if (CanvasSlot)
+				UEmojiWidget* EmojiWidget = Cast<UEmojiWidget>(CreatedWidget);
+				if (EmojiWidget)
 				{
-					CanvasSlot->SetPosition(SpawnPosition);
+					EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
+					FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
+					UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
+					if (CanvasSlot)
+					{
+						CanvasSlot->SetPosition(SpawnPosition);
+					}
+
+					EmojiArray.Add(EmojiWidget);
+
+					// Destruction
+					// EmojiWidget->OnDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
+					// OnEmojiDestroyed(EmojiWidget);
 				}
-
-				EmojiArray.Add(EmojiWidget);
-
-				// Destruction
-				// EmojiWidget->OnDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
-				// OnEmojiDestroyed(EmojiWidget);
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Failed to cast CreatedWidget to UEmojiWidget."));
+				}
 			}
 		}
 		else
@@ -131,24 +130,31 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 
 void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName)
 {
-	// FVector2D CenterPosition = FVector2D(400, 400);		// Center position
-	// SpawnEmoji(EmojiName, CenterPosition);
-
-	if (EmojiCanvas && EmojiWidgetMap.Contains(EmojiName))
+	if (EmojiCanvas && EmojiMaterialMap.Contains(EmojiName))
 	{
-		TSubclassOf<UUserWidget>* FoundEmojiClass = EmojiWidgetMap.Find(EmojiName);
-		if (FoundEmojiClass && *FoundEmojiClass)
+		UMaterialInterface* FoundEmojiMaterial = EmojiMaterialMap[EmojiName];
+		if (FoundEmojiMaterial)
 		{
-			UUserWidget* EmojiWidget = CreateWidget<UUserWidget>(GetWorld(), *FoundEmojiClass);
-			if (EmojiWidget)
+			UUserWidget* CreatedWidget = CreateWidget<UEmojiWidget>(GetWorld(), UEmojiWidget::StaticClass());
+			if (CreatedWidget)
 			{
-				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
-				if (CanvasSlot)
+				UEmojiWidget* EmojiWidget = Cast<UEmojiWidget>(CreatedWidget);
+				if (EmojiWidget)
 				{
-					CanvasSlot->SetPosition(CenterSpawnPoint);
-				}
+					EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
+					
+					UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
+					if (CanvasSlot)
+					{
+						CanvasSlot->SetPosition(CenterSpawnPoint);
+					}
 
-				EmojiArray.Add(EmojiWidget);
+					EmojiArray.Add(EmojiWidget);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Failed to cast CreatedWidget to UEmojiWidget."));
+				}
 			}
 		}
 		else
