@@ -26,23 +26,27 @@ void AEmojiManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// for (FEmojiType& EmojiType : )
-
 	GameInstance = GetGameInstance<UEmojiGameInstance>();
 	check(GameInstance);
-
-	// Set Config Data
-	// const TMap<FString, FString>& ConfigMap = GameInstance->GetConfigMap();
-	//
-	// FloatSpeed = FCString::Atof(**ConfigMap.Find(FString("floatspeed")));
-	// SwayAmount = FCString::Atof(**ConfigMap.Find(FString("swayamount")));
-	// SwaySpeed = FCString::Atof(**ConfigMap.Find(FString("swayspeed")));
 
 	// Get MqttManager
 	TActorIterator<AMqttManager> It(GetWorld());
 	MqttManager = *It;
 	check(MqttManager);
 
+	// Debugging for EmojiMaterialMap
+	for (const auto& Elem : EmojiMaterialMap)
+	{
+		if (Elem.Value)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Material Map Entry: Key=%s, Material=%s"), *Elem.Key, *Elem.Value->GetName());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Material Map Entry: Key=%s has a null Material"), *Elem.Key);
+		}
+	}
+	
 	// Create the EmojiManagerWidget and add it to viewport
 	if (EmojiManagerWidgetClass)
 	{
@@ -89,34 +93,31 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 	if (EmojiCanvas && EmojiMaterialMap.Contains(EmojiName))
 	{
 		UMaterialInterface* FoundEmojiMaterial = EmojiMaterialMap[EmojiName];
-		if (FoundEmojiMaterial)
+		if (!FoundEmojiMaterial)
 		{
-			UUserWidget* CreatedWidget = CreateWidget<UEmojiWidget>(GetWorld(), UEmojiWidget::StaticClass());
-			if (CreatedWidget)
-			{
-				UEmojiWidget* EmojiWidget = Cast<UEmojiWidget>(CreatedWidget);
-				if (EmojiWidget)
-				{
-					EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
-					FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
-					UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
-					if (CanvasSlot)
-					{
-						CanvasSlot->SetPosition(SpawnPosition);
-					}
-
-					EmojiArray.Add(EmojiWidget);
-
-					// Destruction
-					// EmojiWidget->OnDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
-					// OnEmojiDestroyed(EmojiWidget);
-				}
-				else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Failed to cast CreatedWidget to UEmojiWidget."));
-				}
-			}
+			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Material for %s is null"), *EmojiName);
+			return;
 		}
+			UEmojiWidget* EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), UEmojiWidget::StaticClass());
+			if (EmojiWidget)
+			{
+				EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
+				UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting material for %s"), *EmojiName);
+				
+				FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
+				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
+				if (CanvasSlot)
+				{
+					CanvasSlot->SetPosition(SpawnPosition);
+					UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
+				}	
+
+				EmojiArray.Add(EmojiWidget);
+
+				// Destruction
+				// EmojiWidget->OnDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
+				// OnEmojiDestroyed(EmojiWidget);
+			}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Emoji class for %s not found."), *EmojiName);
@@ -135,26 +136,23 @@ void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName)
 		UMaterialInterface* FoundEmojiMaterial = EmojiMaterialMap[EmojiName];
 		if (FoundEmojiMaterial)
 		{
-			UUserWidget* CreatedWidget = CreateWidget<UEmojiWidget>(GetWorld(), UEmojiWidget::StaticClass());
-			if (CreatedWidget)
+			UEmojiWidget* EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
+			if (EmojiWidget)
 			{
-				UEmojiWidget* EmojiWidget = Cast<UEmojiWidget>(CreatedWidget);
-				if (EmojiWidget)
+				EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
+				
+				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
+				if (CanvasSlot)
 				{
-					EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
-					
-					UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
-					if (CanvasSlot)
-					{
-						CanvasSlot->SetPosition(CenterSpawnPoint);
-					}
+					CanvasSlot->SetPosition(CenterSpawnPoint);
+					UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at center position"), *EmojiName);
+				}
 
-					EmojiArray.Add(EmojiWidget);
-				}
-				else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Failed to cast CreatedWidget to UEmojiWidget."));
-				}
+				EmojiArray.Add(EmojiWidget);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Failed to cast CreatedWidget to UEmojiWidget."));
 			}
 		}
 		else
@@ -168,7 +166,7 @@ void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName)
 	}
 }
 
-void AEmojiManager::OnEmojiDestroyed(UUserWidget* DestroyedEmoji)
+void AEmojiManager::OnEmojiDestroyed(UEmojiWidget* DestroyedEmoji)
 {
 	EmojiArray.Remove(DestroyedEmoji);
 }
@@ -201,7 +199,7 @@ void AEmojiManager::ShowEmoji(bool bShowEmoji)
 	// 	}
 	// }
 
-	for (UUserWidget* EmojiWidget : EmojiArray)
+	for (UEmojiWidget* EmojiWidget : EmojiArray)
 	{
 		if (EmojiWidget)
 		{
@@ -210,7 +208,7 @@ void AEmojiManager::ShowEmoji(bool bShowEmoji)
 	}
 }
 
-const TArray<UUserWidget*>& AEmojiManager::GetEmojiArray() const
+const TArray<UEmojiWidget*>& AEmojiManager::GetEmojiArray() const
 {
 	return EmojiArray;
 }

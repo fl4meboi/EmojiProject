@@ -25,32 +25,32 @@ void AEmojiPlayerController::BeginPlay()
 
 void AEmojiPlayerController::SpawnEmoji()
 {
-	UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji"));
+	UE_LOG(LogTemp, Warning, TEXT("EmojiPlayerController::SpawnEmoji: Emoji side spawned"));
 	FString EmojiName = EmojiManager->GetRandomEmojiName();
 	if (!EmojiName.IsEmpty())
 	{
 		// EmojiManager->SetCurrentEmoji(EmojiName);	// SetCurrentEmoji 함수도 필요 없음 
 		EmojiManager->SpawnEmoji(EmojiName);
-		UE_LOG(LogTemp, Warning, TEXT("%s spawned"), *EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("EmojiPlayerController::SpawnEmoji: %s spawned"), *EmojiName);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Emoji %s not found"), *EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("EmojiPlayerController::SpawnEmoji: Emoji %s not found"), *EmojiName);
 	}
 }
 
 void AEmojiPlayerController::CenterSpawnEmoji()
 {
-	UE_LOG(LogTemp, Warning, TEXT("CenterSpawnEmoji"));
+	UE_LOG(LogTemp, Warning, TEXT("EmojiPlayerController::SpawnEmoji: Emoji center spawned"));
 	FString EmojiName = EmojiManager->GetRandomEmojiName();
 	if (!EmojiName.IsEmpty())
 	{
 		EmojiManager->CenterSpawnEmoji(EmojiName);
-		UE_LOG(LogTemp, Warning, TEXT("%s spawned"), *EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("EmojiPlayerController::SpawnEmoji: %s spawned"), *EmojiName);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Emoji %s not found"), *EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("EmojiPlayerController::SpawnEmoji: Emoji %s not found"), *EmojiName);
 	}
 }
 

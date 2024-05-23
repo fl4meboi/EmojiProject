@@ -20,8 +20,8 @@ struct FEmojiType
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
-	TArray<TSubclassOf<AEmojiActor>> EmojiClass;
+	// UPROPERTY(EditAnywhere)
+	// TArray<TSubclassOf<AEmojiActor>> EmojiClass;
 };
 
 UCLASS()
@@ -43,7 +43,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	void CenterSpawnEmoji(const FString& EmojiName);
 
-	void OnEmojiDestroyed(UUserWidget* DestroyedEmoji);
+	void OnEmojiDestroyed(UEmojiWidget* DestroyedEmoji);
 
 	void SideOrCenter(bool bIsCenter, const FString& EmojiName);
 
@@ -52,7 +52,7 @@ public:
 	
 	FString GetRandomEmojiName();
 	
-	const TArray<UUserWidget*>& GetEmojiArray() const;
+	const TArray<UEmojiWidget*>& GetEmojiArray() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -75,11 +75,17 @@ private:
 	UPROPERTY()
 	UUserWidget* EmojiManagerWidget;
 
+	UPROPERTY(EditAnywhere, Category = "Emoji")
+	TSubclassOf<UEmojiWidget> EmojiWidgetClass;
+
+	UPROPERTY()
+	UEmojiWidget* EmojiWidget;
+
 	UPROPERTY()
 	UCanvasPanel* EmojiCanvas;
 	
 	UPROPERTY()
-	TArray<UUserWidget*> EmojiArray;
+	TArray<UEmojiWidget*> EmojiArray;
 	
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	AMqttManager* MqttManager;

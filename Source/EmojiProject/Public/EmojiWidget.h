@@ -15,16 +15,14 @@ UCLASS()
 class EMOJIPROJECT_API UEmojiWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
 	void SetEmojiMaterial(UMaterialInterface* NewMaterial);
-
-	void HelloFunc();
 	
 protected:
-	UPROPERTY(Meta = (BindWidget))
-	class UImage* EmojiImage;
+	UPROPERTY(BlueprintReadOnly, Meta = (AllowPrivateAccess, BindWidget))
+	UImage* EmojiImage;
 
 private:
 	UPROPERTY()
