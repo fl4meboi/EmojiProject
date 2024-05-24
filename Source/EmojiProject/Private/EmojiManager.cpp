@@ -98,34 +98,42 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Material for %s is null"), *EmojiName);
 			return;
 		}
-			UEmojiWidget* EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), UEmojiWidget::StaticClass());
-			if (EmojiWidget)
-			{
-				EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
-				UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting material for %s"), *EmojiName);
-				
-				FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
-				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
-				if (CanvasSlot)
-				{
-					CanvasSlot->SetPosition(SpawnPosition);
-					UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
-				}	
-
-				EmojiArray.Add(EmojiWidget);
-
-				// Destruction
-				// EmojiWidget->OnDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
-				// OnEmojiDestroyed(EmojiWidget);
-			}
-		else
+		
+		this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
+		if (!this->EmojiWidget)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Emoji class for %s not found."), *EmojiName);
+			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: CreateWidget is null"));
+			// EmojiWidget->PlayAnimation()
+			return;
 		}
+		
+		this->EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
+		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting material for %s"), *EmojiName);
+		
+		FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
+		UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
+		if (CanvasSlot)
+		{
+			CanvasSlot->SetPosition(SpawnPosition);
+			UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
+
+			UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
+		}	
+
+		EmojiArray.Add(this->EmojiWidget);
+
+		// Destruction
+		// EmojiWidget->OnDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
+		// OnEmojiDestroyed(EmojiWidget);
+			
+		// else
+		// {
+		// 	UE_LOG(LogTemp, Warning, TEXT("Emoji class for %s not found."), *EmojiName);
+		// }
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Emoji with name %s not found in map or EmojiCanvas is null."), *EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Emoji with name %s not found in map or EmojiCanvas is null."), *EmojiName);
 	}
 }
 
@@ -136,23 +144,25 @@ void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName)
 		UMaterialInterface* FoundEmojiMaterial = EmojiMaterialMap[EmojiName];
 		if (FoundEmojiMaterial)
 		{
-			UEmojiWidget* EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
-			if (EmojiWidget)
+			this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
+			if (this->EmojiWidget)
 			{
-				EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
+				this->EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
 				
-				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(EmojiWidget);
+				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
 				if (CanvasSlot)
 				{
 					CanvasSlot->SetPosition(CenterSpawnPoint);
 					UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at center position"), *EmojiName);
+
+					UGameplayStatics::PlaySound2D(GetWorld(), CenterEmojiSpawnSound);
 				}
 
-				EmojiArray.Add(EmojiWidget);
+				EmojiArray.Add(this->EmojiWidget);
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Failed to cast CreatedWidget to UEmojiWidget."));
+				UE_LOG(LogTemp, Warning, TEXT("Failed to create EmojiWidget"));
 			}
 		}
 		else
@@ -186,26 +196,16 @@ void AEmojiManager::SideOrCenter(bool bIsCenter, const FString& EmojiName)
 void AEmojiManager::ShowEmoji(bool bShowEmoji)
 {
 	bIsShown = bShowEmoji;
-	// MqttManager에서 power true/false push 받으면
-	// 돌면서 visibility
-	
-	// 이 함수를 BP에서 호출해서 Show 할지를 bool로 결정하자
 
-	// for (auto Emoji : EmojiArray)
+	// for (this->EmojiWidget : EmojiArray)
 	// {
-	// 	if (Emoji->IsValidLowLevelFast())
+	// 	if (EmojiWidget)
 	// 	{
-	// 		Emoji->SetActorHiddenInGame(!bIsShown);
+	// 		EmojiWidget->SetVisibility(bIsShown ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	// 	}
 	// }
 
-	for (UEmojiWidget* EmojiWidget : EmojiArray)
-	{
-		if (EmojiWidget)
-		{
-			EmojiWidget->SetVisibility(bIsShown ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-		}
-	}
+	EmojiManagerWidget->SetVisibility(bIsShown ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 
 const TArray<UEmojiWidget*>& AEmojiManager::GetEmojiArray() const
