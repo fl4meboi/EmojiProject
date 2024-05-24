@@ -66,7 +66,7 @@ protected:
 	FVector2D CenterSpawnPoint = FVector2D(960, 540);
 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
-	TMap<FString, UMaterialInterface*> EmojiMaterialMap;
+	TMap<FString, UTexture*> EmojiTextureMap;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Emoji")

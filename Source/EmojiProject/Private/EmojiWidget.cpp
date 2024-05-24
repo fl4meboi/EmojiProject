@@ -5,29 +5,27 @@
 
 #include "Components/Image.h"
 
-void UEmojiWidget::SetEmojiMaterial(UMaterialInterface* NewMaterial)
+void UEmojiWidget::SetEmojiTexture(UTexture* NewTexture)
 {
 		if (!EmojiImage)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("SetEmojiMaterial: EmojiImage is null"));
+			UE_LOG(LogTemp, Warning, TEXT("SetEmojTexture: EmojiImage is null"));
 			return;
 		}
 
-		if (!NewMaterial)
+		if (!NewTexture)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("SetEmojiMaterial: NewMaterial is null"));
+			UE_LOG(LogTemp, Warning, TEXT("SetEmojTexture: NewTexture is null"));
 			return;
 		}
 		// UE_LOG(LogTemp, Warning, TEXT("SetEmojiMaterial: Failed to set Emoji material"));
 
-		EmojiMaterial = NewMaterial;			// Store material reference
+		EmojiTexture = NewTexture;			// Store material reference
 		FSlateBrush Brush;
-		Brush.SetResourceObject(NewMaterial);
-		// EmojiImage->SetBrush(Brush);
-		EmojiImage->SetBrushFromMaterial(NewMaterial);
+		Brush.SetResourceObject(NewTexture);
+		EmojiImage->SetBrush(Brush);
+		// EmojiImage->SetBrushFromSoftTexture(NewTexture);
 		EmojiImage->SetVisibility(ESlateVisibility::Visible); 
 		
-		UE_LOG(LogTemp, Warning, TEXT("SetEmojiMaterial: Successfully set material %s"), *NewMaterial->GetName());
-
-	
+		UE_LOG(LogTemp, Warning, TEXT("SetEmojiMaterial: Successfully set texture %s"), *NewTexture->GetName());
 }

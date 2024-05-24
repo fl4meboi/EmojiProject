@@ -35,15 +35,15 @@ void AEmojiManager::BeginPlay()
 	check(MqttManager);
 
 	// Debugging for EmojiMaterialMap
-	for (const auto& Elem : EmojiMaterialMap)
+	for (const auto& Elem : EmojiTextureMap)
 	{
 		if (Elem.Value)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Material Map Entry: Key=%s, Material=%s"), *Elem.Key, *Elem.Value->GetName());
+			UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s, Texture=%s"), *Elem.Key, *Elem.Value->GetName());
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Material Map Entry: Key=%s has a null Material"), *Elem.Key);
+			UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s has a null Texture"), *Elem.Key);
 		}
 	}
 	
@@ -74,11 +74,11 @@ void AEmojiManager::Tick(float DeltaTime)
 
 FString AEmojiManager::GetRandomEmojiName()
 {
-	if (EmojiMaterialMap.Num() > 0)
+	if (EmojiTextureMap.Num() > 0)
 	{
 		// Get all keys from the map
 		TArray<FString> Keys;
-		EmojiMaterialMap.GetKeys(Keys);
+		EmojiTextureMap.GetKeys(Keys);
 
 		// Select a random key
 		int32 RandomIndex = FMath::RandRange(0, Keys.Num() - 1);
@@ -90,12 +90,12 @@ FString AEmojiManager::GetRandomEmojiName()
 
 void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 {
-	if (EmojiCanvas && EmojiMaterialMap.Contains(EmojiName))
+	if (EmojiCanvas && EmojiTextureMap.Contains(EmojiName))
 	{
-		UMaterialInterface* FoundEmojiMaterial = EmojiMaterialMap[EmojiName];
-		if (!FoundEmojiMaterial)
+		UTexture* FoundEmojiTexture = EmojiTextureMap[EmojiName];
+		if (!FoundEmojiTexture)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Material for %s is null"), *EmojiName);
+			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Texture for %s is null"), *EmojiName);
 			return;
 		}
 		
@@ -107,8 +107,8 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 			return;
 		}
 		
-		this->EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
-		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting material for %s"), *EmojiName);
+		this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture);
+		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting texture for %s"), *EmojiName);
 		
 		FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
 		UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
@@ -139,15 +139,15 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 
 void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName)
 {
-	if (EmojiCanvas && EmojiMaterialMap.Contains(EmojiName))
+	if (EmojiCanvas && EmojiTextureMap.Contains(EmojiName))
 	{
-		UMaterialInterface* FoundEmojiMaterial = EmojiMaterialMap[EmojiName];
-		if (FoundEmojiMaterial)
+		UTexture* FoundEmojiTexture = EmojiTextureMap[EmojiName];
+		if (FoundEmojiTexture)
 		{
 			this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
 			if (this->EmojiWidget)
 			{
-				this->EmojiWidget->SetEmojiMaterial(FoundEmojiMaterial);
+				this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture);
 				
 				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
 				if (CanvasSlot)

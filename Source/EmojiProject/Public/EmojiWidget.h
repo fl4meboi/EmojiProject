@@ -17,14 +17,18 @@ class EMOJIPROJECT_API UEmojiWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	// UFUNCTION(BlueprintCallable, Category = "Emoji")
+	// void SetEmojiMaterial(UMaterialInterface* NewMaterial);
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
-	void SetEmojiMaterial(UMaterialInterface* NewMaterial);
+	void SetEmojiTexture(UTexture* NewTexture);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, Meta = (AllowPrivateAccess, BindWidget))
 	UImage* EmojiImage;
 
 private:
+	// UPROPERTY()
+	// UMaterialInterface* EmojiMaterial;
 	UPROPERTY()
-	UMaterialInterface* EmojiMaterial;
+	UTexture* EmojiTexture;
 };
