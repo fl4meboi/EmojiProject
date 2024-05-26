@@ -12,6 +12,7 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/PanelWidget.h"
+#include "Engine/Canvas.h"
 // #include "UE4Library/NotificationType.Pregenerated.h"
 
 // Sets default values
@@ -56,12 +57,12 @@ void AEmojiManager::BeginPlay()
 		{
 			EmojiManagerWidget->AddToViewport();
 
-			// Find the CanvasPanel in the EmojiManagerWidget
-			EmojiCanvas = Cast<UCanvasPanel>(EmojiManagerWidget->GetWidgetFromName(TEXT("EmojiCanvas")));
-			if (!EmojiCanvas)
-			{
-				UE_LOG(LogTemp, Error, TEXT("EmojiCanvas not found in EmojiMangerWidget."));
-			}
+			// // Find the CanvasPanel in the EmojiManagerWidget
+			// EmojiCanvas = Cast<UCanvasPanel>(EmojiManagerWidget->GetWidgetFromName(TEXT("EmojiCanvas")));
+			// if (!EmojiCanvas)
+			// {
+			// 	UE_LOG(LogTemp, Error, TEXT("EmojiCanvas not found in EmojiMangerWidget."));
+			// }
 		}
 	}
 }
@@ -99,30 +100,30 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName, bool bIsCenter)
 			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Texture for %s is null"), *EmojiName);
 			return;
 		}
-
+		
 		this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
-		if (!this->EmojiWidget)
+		if (this->EmojiWidget)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: CreateWidget is null"));
-			
-			return;
-		}
-		
-		this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture, bIsCenter);
-		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting texture for %s"), *EmojiName);
-		
-		FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
-		UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
-		if (CanvasSlot)
-		{
-			CanvasSlot->SetPosition(SpawnPosition);
-			UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
+			this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture, bIsCenter);
+			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting texture for %s"), *EmojiName);
 
+			UCanvasPanel* RootCanvas = Cast<UCanvasPanel>(EmojiManagerWidget->GetRootWidget());
+			if (RootCanvas)
+			{
+				// RootCanvas->AddChild(CreatedWidget);
+				
+				FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
+				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
+				if (CanvasSlot)
+				{
+					CanvasSlot->SetPosition(SpawnPosition);
+					UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
+
+				}	
+			}
+			EmojiArray.Add(this->EmojiWidget);
 			UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
-		}	
-
-		EmojiArray.Add(this->EmojiWidget);
-		
+		}
 	}
 	else
 	{
@@ -141,17 +142,20 @@ void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName, bool bIsCenter)
 			if (this->EmojiWidget)
 			{
 				this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture, bIsCenter);
-				
-				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
-				if (CanvasSlot)
+
+				UCanvasPanel* RootCanvas = Cast<UCanvasPanel>(EmojiManagerWidget->GetRootWidget());
+				if (RootCanvas)
 				{
-					CanvasSlot->SetPosition(CenterSpawnPoint);
-					UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at center position"), *EmojiName);
-
-					UGameplayStatics::PlaySound2D(GetWorld(), CenterEmojiSpawnSound);
+					FVector2D SpawnPosition = CenterSpawnPoint;
+					UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
+					if (CanvasSlot)
+					{
+						CanvasSlot->SetPosition(SpawnPosition);
+						UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at center position"), *EmojiName);
+					}
 				}
-
 				EmojiArray.Add(this->EmojiWidget);
+				UGameplayStatics::PlaySound2D(GetWorld(), CenterEmojiSpawnSound);
 			}
 			else
 			{

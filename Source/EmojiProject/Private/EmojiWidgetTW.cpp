@@ -19,7 +19,14 @@ void AEmojiWidgetTW::BeginPlay()
 {
 	Super::BeginPlay();
 
-
+	if (EmojiManagerWidgetClass)
+	{
+		EmojiManagerWidget = CreateWidget<UUserWidget>(GetWorld(), EmojiManagerWidgetClass);
+		if (EmojiManagerWidget)
+		{
+			WidgetComponent->SetWidget(EmojiManagerWidget);
+		}
+	}
 }
 
 // Called every frame
