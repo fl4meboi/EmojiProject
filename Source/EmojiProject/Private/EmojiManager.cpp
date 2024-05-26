@@ -4,6 +4,7 @@
 #include "EmojiManager.h"
 
 #include "CenterEmojiActor.h"
+#include "EmojiWidgetTW.h"
 #include "MqttManager.h"
 #include "EmojiGameInstance.h"
 #include "EngineUtils.h"
@@ -98,42 +99,59 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Texture for %s is null"), *EmojiName);
 			return;
 		}
-		
-		this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
-		if (!this->EmojiWidget)
+
+		FVector SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
+		FActorSpawnParameters SpawnParams;
+		AEmojiWidgetTW* SpawnedActor = GetWorld()->SpawnActor<AEmojiWidgetTW>(EmojiWidgetTWClass, SpawnPosition, FRotator::ZeroRotator, SpawnParams);
+		if (!SpawnedActor)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: CreateWidget is null"));
-			// EmojiWidget->PlayAnimation()
+			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Failed to spawn EmojiWidgetTW"));
+			return;
+		}
+
+		UWidgetComponent* WidgetComponent = SpawnedActor->FindComponentByClass<UWidgetComponent>();
+		if (!WidgetComponent)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: WidgetComponent not found in EmojiWidgetTW"));
+			return;
+		}
+
+		UEmojiWidget* EmojiWidget = Cast<UEmojiWidget>(WidgetComponent->GetUserWidgetObject());
+		if (!EmojiWidget)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Failed to get EmojiWidget from WidgetComponent"));
 			return;
 		}
 		
-		this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture);
-		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting texture for %s"), *EmojiName);
-		
-		FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
-		UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
-		if (CanvasSlot)
-		{
-			CanvasSlot->SetPosition(SpawnPosition);
-			UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
-
-			UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
-		}	
-
+		EmojiWidget->SetEmojiTexture(FoundEmojiTexture);
+		UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
 		EmojiArray.Add(this->EmojiWidget);
 
-		// Destruction
-		// EmojiWidget->OnDestroyed.BindUObject(this, &AEmojiManager::OnEmojiDestroyed);
-		// OnEmojiDestroyed(EmojiWidget);
-			
-		// else
+		
+		// this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
+		// if (!this->EmojiWidget)
 		// {
-		// 	UE_LOG(LogTemp, Warning, TEXT("Emoji class for %s not found."), *EmojiName);
+		// 	UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: CreateWidget is null"));
+		// 	// EmojiWidget->PlayAnimation()
+		// 	return;
 		// }
+		//
+		// UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting texture for %s"), *EmojiName);
+		//
+		// UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
+		// if (CanvasSlot)
+		// {
+		// 	CanvasSlot->SetPosition(SpawnPosition);
+		// 	UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
+		//
+		// }	
+		//
+
+		
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Emoji with name %s not found in map or EmojiCanvas is null."), *EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Emoji with name %s not found in map"), *EmojiName);
 	}
 }
 

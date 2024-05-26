@@ -58,15 +58,24 @@ protected:
 	// Called when the game starts or when spawned
 
 	// Spawn points
+	// UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
+	// FVector2D LeftSpawnPoint = FVector2D(2420, 540);
+	// UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
+	// FVector2D RightSpawnPoint = FVector2D(3380, 540);
+	// UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
+	// FVector2D CenterSpawnPoint = FVector2D(2880, 540);
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
-	FVector2D LeftSpawnPoint = FVector2D(500, 540);
+	FVector LeftSpawnPoint;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
-	FVector2D RightSpawnPoint = FVector2D(1460, 540);
+	FVector RightSpawnPoint;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
-	FVector2D CenterSpawnPoint = FVector2D(960, 540);
+	FVector CenterSpawnPoint;
 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TMap<FString, UTexture*> EmojiTextureMap;
+
+	UPROPERTY(EditAnywhere, Category = "Emoji")
+	TSubclassOf<class AEmojiWidgetTW> EmojiWidgetTWClass;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Emoji")

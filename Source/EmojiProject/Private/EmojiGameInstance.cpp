@@ -102,6 +102,8 @@ bool UEmojiGameInstance::ApplyConfig()
 
 	GameUserSettings->ApplyResolutionSettings(false);
 
+	LogToFile(LOGTEXT(TEXT("Resolution set")));
+
 	return true;
 }
 
@@ -122,6 +124,8 @@ void UEmojiGameInstance::MoveWindowFunction()
 				Engine->GameViewport->GetWindow()->MoveWindowTo(WindowPosition);
 
 				GetWorld()->GetTimerManager().ClearTimer(MoveWindowTimerHandle);
+
+				LogToFile(LOGTEXT(TEXT("Window position set")));
 			}
 		}
 	}
