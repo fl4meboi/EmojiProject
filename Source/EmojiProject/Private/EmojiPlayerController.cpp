@@ -29,8 +29,9 @@ void AEmojiPlayerController::SpawnEmoji()
 	FString EmojiName = EmojiManager->GetRandomEmojiName();
 	if (!EmojiName.IsEmpty())
 	{
-		// EmojiManager->SetCurrentEmoji(EmojiName);	// SetCurrentEmoji 함수도 필요 없음 
-		EmojiManager->SpawnEmoji(EmojiName);
+		// EmojiManager->SetCurrentEmoji(EmojiName);	// SetCurrentEmoji 함수도 필요 없음
+		bool bIsCenter = false;
+		EmojiManager->SpawnEmoji(EmojiName, bIsCenter);
 		UE_LOG(LogTemp, Warning, TEXT("EmojiPlayerController::SpawnEmoji: %s spawned"), *EmojiName);
 	}
 	else
@@ -45,7 +46,8 @@ void AEmojiPlayerController::CenterSpawnEmoji()
 	FString EmojiName = EmojiManager->GetRandomEmojiName();
 	if (!EmojiName.IsEmpty())
 	{
-		EmojiManager->CenterSpawnEmoji(EmojiName);
+		bool bIsCenter = true;
+		EmojiManager->CenterSpawnEmoji(EmojiName, bIsCenter);
 		UE_LOG(LogTemp, Warning, TEXT("EmojiPlayerController::SpawnEmoji: %s spawned"), *EmojiName);
 	}
 	else

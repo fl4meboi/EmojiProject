@@ -56,7 +56,7 @@ void AEmojiManager::BeginPlay()
 		{
 			EmojiManagerWidget->AddToViewport();
 
-			// Find the CanvasPanel in the EmojiManageWidget
+			// Find the CanvasPanel in the EmojiManagerWidget
 			EmojiCanvas = Cast<UCanvasPanel>(EmojiManagerWidget->GetWidgetFromName(TEXT("EmojiCanvas")));
 			if (!EmojiCanvas)
 			{
@@ -89,7 +89,7 @@ FString AEmojiManager::GetRandomEmojiName()
 	return FString();	// Return an empty string if the map is empty
 }
 
-void AEmojiManager::SpawnEmoji(const FString& EmojiName)
+void AEmojiManager::SpawnEmoji(const FString& EmojiName, bool bIsCenter)
 {
 	if (EmojiCanvas && EmojiTextureMap.Contains(EmojiName))
 	{
@@ -100,53 +100,28 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 			return;
 		}
 
-		FVector SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
-		FActorSpawnParameters SpawnParams;
-		AEmojiWidgetTW* SpawnedActor = GetWorld()->SpawnActor<AEmojiWidgetTW>(EmojiWidgetTWClass, SpawnPosition, FRotator::ZeroRotator, SpawnParams);
-		if (!SpawnedActor)
+		this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
+		if (!this->EmojiWidget)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Failed to spawn EmojiWidgetTW"));
-			return;
-		}
-
-		UWidgetComponent* WidgetComponent = SpawnedActor->FindComponentByClass<UWidgetComponent>();
-		if (!WidgetComponent)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: WidgetComponent not found in EmojiWidgetTW"));
-			return;
-		}
-
-		UEmojiWidget* EmojiWidget = Cast<UEmojiWidget>(WidgetComponent->GetUserWidgetObject());
-		if (!EmojiWidget)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Failed to get EmojiWidget from WidgetComponent"));
+			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: CreateWidget is null"));
+			
 			return;
 		}
 		
-		EmojiWidget->SetEmojiTexture(FoundEmojiTexture);
-		UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
+		this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture, bIsCenter);
+		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting texture for %s"), *EmojiName);
+		
+		FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
+		UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
+		if (CanvasSlot)
+		{
+			CanvasSlot->SetPosition(SpawnPosition);
+			UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
+
+			UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
+		}	
+
 		EmojiArray.Add(this->EmojiWidget);
-
-		
-		// this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
-		// if (!this->EmojiWidget)
-		// {
-		// 	UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: CreateWidget is null"));
-		// 	// EmojiWidget->PlayAnimation()
-		// 	return;
-		// }
-		//
-		// UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting texture for %s"), *EmojiName);
-		//
-		// UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
-		// if (CanvasSlot)
-		// {
-		// 	CanvasSlot->SetPosition(SpawnPosition);
-		// 	UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
-		//
-		// }	
-		//
-
 		
 	}
 	else
@@ -155,7 +130,7 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName)
 	}
 }
 
-void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName)
+void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName, bool bIsCenter)
 {
 	if (EmojiCanvas && EmojiTextureMap.Contains(EmojiName))
 	{
@@ -165,7 +140,7 @@ void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName)
 			this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
 			if (this->EmojiWidget)
 			{
-				this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture);
+				this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture, bIsCenter);
 				
 				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
 				if (CanvasSlot)
@@ -203,11 +178,11 @@ void AEmojiManager::SideOrCenter(bool bIsCenter, const FString& EmojiName)
 {
 	if (bIsCenter)
 	{
-		CenterSpawnEmoji(EmojiName);
+		CenterSpawnEmoji(EmojiName, bIsCenter);
 	}
 	else
 	{
-		SpawnEmoji(EmojiName);
+		SpawnEmoji(EmojiName, bIsCenter);
 	}
 }
 

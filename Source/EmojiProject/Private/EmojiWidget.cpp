@@ -5,8 +5,25 @@
 
 #include "Components/Image.h"
 
-void UEmojiWidget::SetEmojiTexture(UTexture* NewTexture)
+void UEmojiWidget::NativeConstruct()
 {
+	Super::NativeConstruct();
+
+	if (!bIsCenter)
+	{
+		PlayAnimation(SideAnimation);
+	}
+	else
+	{
+		PlayAnimation(CenterAnimation);
+	}
+}
+
+void UEmojiWidget::SetEmojiTexture(UTexture* NewTexture, bool bCenter)
+{
+		this->bIsCenter = bCenter;
+		// bCenter = bIsCenter;
+	
 		if (!EmojiImage)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("SetEmojTexture: EmojiImage is null"));
@@ -29,3 +46,5 @@ void UEmojiWidget::SetEmojiTexture(UTexture* NewTexture)
 		
 		UE_LOG(LogTemp, Warning, TEXT("SetEmojiMaterial: Successfully set texture %s"), *NewTexture->GetName());
 }
+
+

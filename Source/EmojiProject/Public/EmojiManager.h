@@ -38,10 +38,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
-	void SpawnEmoji(const FString& EmojiName);
+	void SpawnEmoji(const FString& EmojiName, bool bIsCenter);
 
 	UFUNCTION(BlueprintCallable, Category = "Emoji")
-	void CenterSpawnEmoji(const FString& EmojiName);
+	void CenterSpawnEmoji(const FString& EmojiName, bool bIsCenter);
 
 	void OnEmojiDestroyed(UEmojiWidget* DestroyedEmoji);
 
@@ -65,11 +65,11 @@ protected:
 	// UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
 	// FVector2D CenterSpawnPoint = FVector2D(2880, 540);
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
-	FVector LeftSpawnPoint;
+	FVector2D LeftSpawnPoint;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
-	FVector RightSpawnPoint;
+	FVector2D RightSpawnPoint;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
-	FVector CenterSpawnPoint;
+	FVector2D CenterSpawnPoint;
 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TMap<FString, UTexture*> EmojiTextureMap;
@@ -78,15 +78,15 @@ protected:
 	TSubclassOf<class AEmojiWidgetTW> EmojiWidgetTWClass;
 
 private:
+	// Inside EmojiManager in level 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TSubclassOf<UUserWidget> EmojiManagerWidgetClass;
-
 	UPROPERTY()
 	UUserWidget* EmojiManagerWidget;
 
+	// Inside EmojiManager in level 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TSubclassOf<UEmojiWidget> EmojiWidgetClass;
-
 	UPROPERTY()
 	UEmojiWidget* EmojiWidget;
 

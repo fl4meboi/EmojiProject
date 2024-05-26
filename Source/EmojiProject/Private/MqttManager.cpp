@@ -396,7 +396,8 @@ void AMqttManager::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 			// EmojiManager = GetWorld()->SpawnActor<AEmojiManager>();		// ?? 왜 EmojiManager를 또 소환해?
 
 			// Special이 true이면
-			EmojiManager->SpawnEmoji(EmojiName);
+			bool bIsCenter = false;
+			EmojiManager->SpawnEmoji(EmojiName, bIsCenter);
 
 			UE_LOG(LogTemp, Warning, TEXT("Emoji implemented"));
 		}
