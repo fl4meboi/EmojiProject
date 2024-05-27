@@ -14,10 +14,15 @@ AEmojiWidgetTW::AEmojiWidgetTW()
 	WidgetComponent->SetupAttachment(RootComponent);
 	WidgetComponent->SetWidgetSpace(EWidgetSpace::World);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/KDJ/Widget/EmojiManagerWidget"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/KDJ/Widget/WBP_EmojiManagerWidget"));
 	if (WidgetClass.Succeeded())
 	{
 		EmojiManagerWidgetClass = WidgetClass.Class;
+		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW: EmojiManagerWidgetClass Successfully found"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW: EmojiManagerWidgetClass not found"));
 	}
 }
 
@@ -28,7 +33,7 @@ void AEmojiWidgetTW::BeginPlay()
 
 	if (EmojiManagerWidgetClass)
 	{
-		EmojiManagerWidget = CreateWidget<UUserWidget>(GetWorld(), EmojiManagerWidgetClass);
+		EmojiManagerWidget = CreateWidget<UEmojiManagerWidget>(GetWorld(), EmojiManagerWidgetClass);
 		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget found and created"));
 		
 		if (EmojiManagerWidget)
@@ -36,7 +41,7 @@ void AEmojiWidgetTW::BeginPlay()
 			WidgetComponent->SetWidget(EmojiManagerWidget);
 			WidgetComponent->SetDrawSize(FVector2D(500, 500));
 			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget successfully created and assigned to WidgetComponent"));
-		}
+		}	
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: Failed to create EmojiManagerWidget"));

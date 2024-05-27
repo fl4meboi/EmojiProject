@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EmojiManagerWidget.h"
 #include "Blueprint/UserWidgetBlueprint.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -32,7 +33,7 @@ public:
 	UWidgetComponent* WidgetComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Emoji")
-	TSubclassOf<UUserWidget> EmojiManagerWidgetClass;
+	TSubclassOf<UEmojiManagerWidget> EmojiManagerWidgetClass;
 	UPROPERTY()
-	UUserWidget* EmojiManagerWidget;
+	UEmojiManagerWidget* EmojiManagerWidget;
 };
