@@ -36,6 +36,46 @@ void AEmojiManager::BeginPlay()
 	MqttManager = *It;
 	check(MqttManager);
 
+	// TActorIterator<AEmojiWidgetTW> Iter(GetWorld());
+	//
+	// check()
+
+	// Find the EmojiWidgetTW and get its EmojiManagerWidget
+	for (TActorIterator<AEmojiWidgetTW> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		AEmojiWidgetTW* EmojiWidgetTw = *ActorItr;
+		UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiWidgetTW found"));
+		
+		if (EmojiWidgetTw)
+		{
+			UWidgetComponent* WidgetComp = EmojiWidgetTw->WidgetComponent;
+			if (WidgetComp)
+			{
+				EmojiManagerWidget = WidgetComp->GetUserWidgetObject();
+				if (!EmojiManagerWidget)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget not found in EmojiWidgetTW"));
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: WidgetComponent not found in EmojiWidgetTW"));
+			}
+			
+			// EmojiManagerWidget = EmojiWidgetTw->EmojiManagerWidget;
+			// UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget found in EmojiWidgetTW"));
+			//
+			// if (!EmojiManagerWidget)
+			// {
+			// 	UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget not found in EmojiWidgetTW"));
+			// }
+			
+			break;;
+		}
+	}
+
+	
+	
 	// Debugging for EmojiMaterialMap
 	for (const auto& Elem : EmojiTextureMap)
 	{
@@ -46,23 +86,6 @@ void AEmojiManager::BeginPlay()
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s has a null Texture"), *Elem.Key);
-		}
-	}
-	
-	// Create the EmojiManagerWidget and add it to viewport
-	if (EmojiManagerWidgetClass)
-	{
-		EmojiManagerWidget = CreateWidget<UUserWidget>(GetWorld(), EmojiManagerWidgetClass);
-		if (EmojiManagerWidget)
-		{
-			EmojiManagerWidget->AddToViewport();
-
-			// // Find the CanvasPanel in the EmojiManagerWidget
-			// EmojiCanvas = Cast<UCanvasPanel>(EmojiManagerWidget->GetWidgetFromName(TEXT("EmojiCanvas")));
-			// if (!EmojiCanvas)
-			// {
-			// 	UE_LOG(LogTemp, Error, TEXT("EmojiCanvas not found in EmojiMangerWidget."));
-			// }
 		}
 	}
 }
@@ -92,7 +115,7 @@ FString AEmojiManager::GetRandomEmojiName()
 
 void AEmojiManager::SpawnEmoji(const FString& EmojiName, bool bIsCenter)
 {
-	if (EmojiCanvas && EmojiTextureMap.Contains(EmojiName))
+	if (EmojiManagerWidget && EmojiTextureMap.Contains(EmojiName))
 	{
 		UTexture* FoundEmojiTexture = EmojiTextureMap[EmojiName];
 		if (!FoundEmojiTexture)
@@ -114,6 +137,8 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName, bool bIsCenter)
 				
 				FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
 				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
+				UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Added child to canvas"));
+
 				if (CanvasSlot)
 				{
 					CanvasSlot->SetPosition(SpawnPosition);
@@ -127,13 +152,13 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName, bool bIsCenter)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Emoji with name %s not found in map"), *EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Emoji with name %s not found in map or EmojiManagerWidget is null"), *EmojiName);
 	}
 }
 
 void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName, bool bIsCenter)
 {
-	if (EmojiCanvas && EmojiTextureMap.Contains(EmojiName))
+	if (EmojiManagerWidget && EmojiTextureMap.Contains(EmojiName))
 	{
 		UTexture* FoundEmojiTexture = EmojiTextureMap[EmojiName];
 		if (FoundEmojiTexture)
@@ -169,7 +194,7 @@ void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName, bool bIsCenter)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Emoji with name %s not found in map or EmojiCanvas is null."), *EmojiName);
+		UE_LOG(LogTemp, Warning, TEXT("Emoji with name %s not found in map or EmojiManagerWidget is null"), *EmojiName);
 	}
 }
 

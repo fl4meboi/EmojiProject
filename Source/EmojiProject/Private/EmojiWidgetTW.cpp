@@ -9,9 +9,16 @@ AEmojiWidgetTW::AEmojiWidgetTW()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 	WidgetComponent->SetupAttachment(RootComponent);
-	// WidgetComponent->SetWidgetSpace()
+	WidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/KDJ/Widget/EmojiManagerWidget"));
+	if (WidgetClass.Succeeded())
+	{
+		EmojiManagerWidgetClass = WidgetClass.Class;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -22,10 +29,22 @@ void AEmojiWidgetTW::BeginPlay()
 	if (EmojiManagerWidgetClass)
 	{
 		EmojiManagerWidget = CreateWidget<UUserWidget>(GetWorld(), EmojiManagerWidgetClass);
+		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget found and created"));
+		
 		if (EmojiManagerWidget)
 		{
 			WidgetComponent->SetWidget(EmojiManagerWidget);
+			WidgetComponent->SetDrawSize(FVector2D(500, 500));
+			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget set in EmojiWidgetTW"));
 		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget not set in EmojiWidgetTW"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget not found"));
 	}
 }
 
