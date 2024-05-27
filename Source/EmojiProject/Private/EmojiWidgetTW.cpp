@@ -35,16 +35,16 @@ void AEmojiWidgetTW::BeginPlay()
 		{
 			WidgetComponent->SetWidget(EmojiManagerWidget);
 			WidgetComponent->SetDrawSize(FVector2D(500, 500));
-			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget set in EmojiWidgetTW"));
+			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget successfully created and assigned to WidgetComponent"));
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget not set in EmojiWidgetTW"));
+			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: Failed to create EmojiManagerWidget"));
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget not found"));
+		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidgetClass is null"));
 	}
 }
 

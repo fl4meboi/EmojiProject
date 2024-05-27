@@ -36,25 +36,40 @@ void AEmojiManager::BeginPlay()
 	MqttManager = *It;
 	check(MqttManager);
 
-	// TActorIterator<AEmojiWidgetTW> Iter(GetWorld());
-	//
-	// check()
-
 	// Find the EmojiWidgetTW and get its EmojiManagerWidget
 	for (TActorIterator<AEmojiWidgetTW> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		AEmojiWidgetTW* EmojiWidgetTw = *ActorItr;
-		UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiWidgetTW found"));
 		
 		if (EmojiWidgetTw)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiWidgetTW found"));
 			UWidgetComponent* WidgetComp = EmojiWidgetTw->WidgetComponent;
 			if (WidgetComp)
 			{
-				EmojiManagerWidget = WidgetComp->GetUserWidgetObject();
+				UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiWidgetTW's WidgetComponent found"));
+				UUserWidget* EmojiManagerWidget = WidgetComp->GetUserWidgetObject();
 				if (!EmojiManagerWidget)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget not found in EmojiWidgetTW"));
+					UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget not found in EmojiWidgetTW's WidgetComponent"));		// 여기까지 옴
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget found  in EmojiWidgetTW's WidgetComponent"));
+					
+					// Debugging for EmojiMaterialMap
+					for (const auto& Elem : EmojiTextureMap)
+					{
+						if (Elem.Value)
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s, Texture=%s"), *Elem.Key, *Elem.Value->GetName());
+						}
+						else
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s has a null Texture"), *Elem.Key);
+						}
+					}
+					return;			// Exit the loop if widget is found
 				}
 			}
 			else
@@ -70,22 +85,7 @@ void AEmojiManager::BeginPlay()
 			// 	UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget not found in EmojiWidgetTW"));
 			// }
 			
-			break;;
-		}
-	}
-
-	
-	
-	// Debugging for EmojiMaterialMap
-	for (const auto& Elem : EmojiTextureMap)
-	{
-		if (Elem.Value)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s, Texture=%s"), *Elem.Key, *Elem.Value->GetName());
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s has a null Texture"), *Elem.Key);
+			// break;
 		}
 	}
 }
@@ -115,6 +115,24 @@ FString AEmojiManager::GetRandomEmojiName()
 
 void AEmojiManager::SpawnEmoji(const FString& EmojiName, bool bIsCenter)
 {
+	// Find EmojiManagerActor and get its WidgetComponent's UserWidget
+	UUserWidget* EmojiManagerWidget = nullptr;
+	for (TActorIterator<AEmojiWidgetTW> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		AEmojiWidgetTW* EmojiWidgetTw = *ActorItr;
+		if (EmojiWidgetTw)
+		{
+			UWidgetComponent* WidgetComp = EmojiWidgetTw->WidgetComponent;
+			if (WidgetComp)
+			{
+				EmojiManagerWidget = WidgetComp->GetUserWidgetObject();
+				UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: EmojiManagerWidget found in EmojiWidgetTW's WidgetComponent"))
+
+				break;				// Exit the loop if widget is found
+			}
+		}
+	}
+	
 	if (EmojiManagerWidget && EmojiTextureMap.Contains(EmojiName))
 	{
 		UTexture* FoundEmojiTexture = EmojiTextureMap[EmojiName];
@@ -123,29 +141,23 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName, bool bIsCenter)
 			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Texture for %s is null"), *EmojiName);
 			return;
 		}
-		
+
 		this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
 		if (this->EmojiWidget)
 		{
 			this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture, bIsCenter);
 			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Setting texture for %s"), *EmojiName);
+			
+			FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
+			UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
+			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Added child to canvas"));
 
-			UCanvasPanel* RootCanvas = Cast<UCanvasPanel>(EmojiManagerWidget->GetRootWidget());
-			if (RootCanvas)
+			if (CanvasSlot)
 			{
-				// RootCanvas->AddChild(CreatedWidget);
-				
-				FVector2D SpawnPosition = FMath::RandBool() ? LeftSpawnPoint : RightSpawnPoint;
-				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
-				UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Added child to canvas"));
-
-				if (CanvasSlot)
-				{
-					CanvasSlot->SetPosition(SpawnPosition);
-					UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
-
-				}	
-			}
+				CanvasSlot->SetPosition(SpawnPosition);
+				UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
+			}	
+			
 			EmojiArray.Add(this->EmojiWidget);
 			UGameplayStatics::PlaySound2D(GetWorld(), EmojiSpawnSound);
 		}
@@ -158,6 +170,23 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName, bool bIsCenter)
 
 void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName, bool bIsCenter)
 {
+	// Find EmojiManagerActor and get its WidgetComponent's UserWidget
+	UUserWidget* EmojiManagerWidget = nullptr;
+	for (TActorIterator<AEmojiWidgetTW> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		AEmojiWidgetTW* EmojiWidgetTw = *ActorItr;
+		if (EmojiWidgetTw)
+		{
+			UWidgetComponent* WidgetComp = EmojiWidgetTw->WidgetComponent;
+			if (WidgetComp)
+			{
+				EmojiManagerWidget = WidgetComp->GetUserWidgetObject();
+				UE_LOG(LogTemp, Warning, TEXT("EmojiManagerWidget found in EmojiWidgetTW's WidgetComponent"))
+				break;				// Exit the loop if widget is found
+			}
+		}
+	}
+	
 	if (EmojiManagerWidget && EmojiTextureMap.Contains(EmojiName))
 	{
 		UTexture* FoundEmojiTexture = EmojiTextureMap[EmojiName];
@@ -167,18 +196,16 @@ void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName, bool bIsCenter)
 			if (this->EmojiWidget)
 			{
 				this->EmojiWidget->SetEmojiTexture(FoundEmojiTexture, bIsCenter);
-
-				UCanvasPanel* RootCanvas = Cast<UCanvasPanel>(EmojiManagerWidget->GetRootWidget());
-				if (RootCanvas)
+				UE_LOG(LogTemp, Warning, TEXT("CenterSpawnEmoji: Setting texture for %s"), *EmojiName);
+				
+				FVector2D SpawnPosition = CenterSpawnPoint;
+				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
+				if (CanvasSlot)
 				{
-					FVector2D SpawnPosition = CenterSpawnPoint;
-					UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
-					if (CanvasSlot)
-					{
-						CanvasSlot->SetPosition(SpawnPosition);
-						UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at center position"), *EmojiName);
-					}
+					CanvasSlot->SetPosition(SpawnPosition);
+					UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at center position"), *EmojiName);
 				}
+				
 				EmojiArray.Add(this->EmojiWidget);
 				UGameplayStatics::PlaySound2D(GetWorld(), CenterEmojiSpawnSound);
 			}
@@ -227,6 +254,23 @@ void AEmojiManager::ShowEmoji(bool bShowEmoji)
 	// 	}
 	// }
 
+	// Find EmojiManagerActor and get its WidgetComponent's UserWidget
+	UUserWidget* EmojiManagerWidget = nullptr;
+	for (TActorIterator<AEmojiWidgetTW> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		AEmojiWidgetTW* EmojiWidgetTw = *ActorItr;
+		if (EmojiWidgetTw)
+		{
+			UWidgetComponent* WidgetComp = EmojiWidgetTw->WidgetComponent;
+			if (WidgetComp)
+			{
+				EmojiManagerWidget = WidgetComp->GetUserWidgetObject();
+				UE_LOG(LogTemp, Warning, TEXT("EmojiManagerWidget found in EmojiWidgetTW's WidgetComponent"))
+				break;				// Exit the loop if widget is found
+			}
+		}
+	}
+	
 	EmojiManagerWidget->SetVisibility(bIsShown ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 

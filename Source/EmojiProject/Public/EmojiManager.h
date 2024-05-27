@@ -74,15 +74,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Emoji")
 	TMap<FString, UTexture*> EmojiTextureMap;
 
-	UPROPERTY(EditAnywhere, Category = "Emoji")
-	TSubclassOf<class AEmojiWidgetTW> EmojiWidgetTWClass;
+	// UPROPERTY(EditAnywhere, Category = "Emoji")
+	// TSubclassOf<class AEmojiWidgetTW> EmojiWidgetTWClass;
 
 private:
-	// Inside EmojiManager in level 
-	UPROPERTY(EditAnywhere, Category = "Emoji")
-	TSubclassOf<UUserWidget> EmojiManagerWidgetClass;
-	UPROPERTY()
-	UUserWidget* EmojiManagerWidget;
+	// // Inside EmojiManager in level 
+	// UPROPERTY(EditAnywhere, Category = "Emoji")
+	// TSubclassOf<UUserWidget> EmojiManagerWidgetClass;
+	// UPROPERTY()
+	// UUserWidget* EmojiManagerWidget;
 
 	// Inside EmojiManager in level 
 	UPROPERTY(EditAnywhere, Category = "Emoji")
