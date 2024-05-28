@@ -7,8 +7,10 @@ void UEmojiManagerWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	UE_LOG(LogTemp, Warning, TEXT("EmojiManagerWidget: EmojiCanvas successfully bound"));
+	
 	if (!EmojiCanvas)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("EmojiCanvas not bound properly"));
+		UE_LOG(LogTemp, Warning, TEXT("EmojiManagerWidget: EmojiCanvas not bound properly"));
 	}
 }

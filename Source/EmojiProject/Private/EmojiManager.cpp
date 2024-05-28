@@ -51,37 +51,42 @@ void AEmojiManager::BeginPlay()
 				UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiWidgetTW's WidgetComponent found"));
 
 				// WidgetComponent에 EmojiManagerWidget 넣는 코드가 이게 맞는지 확인해보자 
-				UEmojiManagerWidget* EmojiManagerWidget = Cast<UEmojiManagerWidget>(WidgetComp->GetUserWidgetObject());
+				// UEmojiManagerWidget* EmojiManagerWidget = Cast<UEmojiManagerWidget>(WidgetComp->GetUserWidgetObject());
+				UUserWidget* UserWidget = WidgetComp->GetUserWidgetObject();
+				UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: Get WidgetComponent"));		// 여기까지 옴 
+				
+				if (UserWidget)
+				{
+					UEmojiManagerWidget* EmojiManagerWidget = Cast<UEmojiManagerWidget>(UserWidget);		// cast 안하고 쓰는 방법 고민 EmojiWidget처럼
+					
+					if (EmojiManagerWidget)
+					{
+						EmojiCanvas = EmojiManagerWidget->EmojiCanvas;
+						UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiCanvas found in EmojiManagerWidget"));
 
-				if (EmojiManagerWidget)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget found  in EmojiWidgetTW's WidgetComponent"));
-					
-					// EmojiCanvas = Cast<UCanvasPanel>(EmojiManagerWidget->GetWidgetFromName(TEXT("EmojiCanvas")));
-					
-					EmojiCanvas = EmojiManagerWidget->EmojiCanvas;
-					if (!EmojiCanvas)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiCanvas not found in EmojiManagerWidget"));
-					}
-					
-					// Debugging for EmojiMaterialMap
-					for (const auto& Elem : EmojiTextureMap)
-					{
-						if (Elem.Value)
+						if (!EmojiCanvas)
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s, Texture=%s"), *Elem.Key, *Elem.Value->GetName());
+							UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiCanvas not found in EmojiManagerWidget"));
 						}
-						else
+
+						// Debugging for EmojiMaterialMap
+						for (const auto& Elem : EmojiTextureMap)
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s has a null Texture"), *Elem.Key);
+							if (Elem.Value)
+							{
+								UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s, Texture=%s"), *Elem.Key, *Elem.Value->GetName());
+							}
+							else
+							{
+								UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s has a null Texture"), *Elem.Key);
+							}
+							return;			// Exit the loop if widget is found
 						}
-						return;			// Exit the loop if widget is found
 					}
-				}
-				else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget not found in EmojiWidgetTW's WidgetComponent"));		// 여기까지 옴
+					else
+					{
+						UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget not found in EmojiWidgetTW's WidgetComponent"));
+					}
 				}
 			}
 			else
@@ -125,7 +130,7 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName, bool bIsCenter)
 			UE_LOG(LogTemp, Warning, TEXT("SpawnEmoji: Texture for %s is null"), *EmojiName);
 			return;
 		}
-
+		
 		this->EmojiWidget = CreateWidget<UEmojiWidget>(GetWorld(), EmojiWidgetClass);
 		if (this->EmojiWidget)
 		{
