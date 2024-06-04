@@ -10,6 +10,7 @@
 #include "EmojiGameInstance.h"
 #include "EngineUtils.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/PanelWidget.h"
@@ -22,6 +23,10 @@ AEmojiManager::AEmojiManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+	WidgetComponent->SetupAttachment(RootComponent);
+	WidgetComponent->SetWidgetSpace(EWidgetSpace::World);
 }
 
 // Called when the game starts or when spawned
@@ -37,63 +42,35 @@ void AEmojiManager::BeginPlay()
 	MqttManager = *It;
 	check(MqttManager);
 
-	// Find the EmojiWidgetTW and get its EmojiManagerWidget
-	for (TActorIterator<AEmojiWidgetTW> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	
+	UEmojiManagerWidget* EmojiManagerWidget = Cast<UEmojiManagerWidget>(WidgetComponent->GetUserWidgetObject());			// problematic code 
+	if (EmojiManagerWidget)
 	{
-		AEmojiWidgetTW* EmojiWidgetTw = *ActorItr;
-		
-		if (EmojiWidgetTw)
+		// UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget found in EmojiWidgetTW"));
+
+		EmojiCanvas = EmojiManagerWidget->EmojiCanvas;
+		if (!EmojiCanvas)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiWidgetTW found"));
-			UWidgetComponent* WidgetComp = EmojiWidgetTw->WidgetComponent;
-			if (WidgetComp)
+			UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiCanvas not found in EmojiManagerWidget"));
+		}
+
+		// Debugging for EmojiMaterialMap
+		for (const auto& Elem : EmojiTextureMap)
+		{
+			if (Elem.Value)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiWidgetTW's WidgetComponent found"));
-
-				// WidgetComponent에 EmojiManagerWidget 넣는 코드가 이게 맞는지 확인해보자 
-				// UEmojiManagerWidget* EmojiManagerWidget = Cast<UEmojiManagerWidget>(WidgetComp->GetUserWidgetObject());
-				UUserWidget* UserWidget = WidgetComp->GetUserWidgetObject();
-				UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: Get WidgetComponent"));		// 여기까지 옴 
-				
-				if (UserWidget)
-				{
-					UEmojiManagerWidget* EmojiManagerWidget = Cast<UEmojiManagerWidget>(UserWidget);		// cast 안하고 쓰는 방법 고민 EmojiWidget처럼
-					
-					if (EmojiManagerWidget)
-					{
-						EmojiCanvas = EmojiManagerWidget->EmojiCanvas;
-						UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiCanvas found in EmojiManagerWidget"));
-
-						if (!EmojiCanvas)
-						{
-							UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiCanvas not found in EmojiManagerWidget"));
-						}
-
-						// Debugging for EmojiMaterialMap
-						for (const auto& Elem : EmojiTextureMap)
-						{
-							if (Elem.Value)
-							{
-								UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s, Texture=%s"), *Elem.Key, *Elem.Value->GetName());
-							}
-							else
-							{
-								UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s has a null Texture"), *Elem.Key);
-							}
-							return;			// Exit the loop if widget is found
-						}
-					}
-					else
-					{
-						UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget not found in EmojiWidgetTW's WidgetComponent"));
-					}
-				}
+				UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s, Texture=%s"), *Elem.Key, *Elem.Value->GetName());
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: WidgetComponent not found in EmojiWidgetTW"));
+				UE_LOG(LogTemp, Warning, TEXT("Texture Map Entry: Key=%s has a null Texture"), *Elem.Key);
 			}
+			return;			// Exit the loop if widget is found
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EmojiManager::BeginPlay: EmojiManagerWidget not found in EmojiWidgetTW"));
 	}
 }
 
@@ -143,6 +120,7 @@ void AEmojiManager::SpawnEmoji(const FString& EmojiName, bool bIsCenter)
 
 			if (CanvasSlot)
 			{
+				CanvasSlot->SetAutoSize(true);
 				CanvasSlot->SetPosition(SpawnPosition);
 				UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at position (%f, %f)"), *EmojiName, SpawnPosition.X, SpawnPosition.Y);
 			}	
@@ -191,6 +169,7 @@ void AEmojiManager::CenterSpawnEmoji(const FString& EmojiName, bool bIsCenter)
 				UCanvasPanelSlot* CanvasSlot = EmojiCanvas->AddChildToCanvas(this->EmojiWidget);
 				if (CanvasSlot)
 				{
+					CanvasSlot->SetAutoSize(true);
 					CanvasSlot->SetPosition(SpawnPosition);
 					UE_LOG(LogTemp, Log, TEXT("SpawnEmoji: %s added to canvas at center position"), *EmojiName);
 				}

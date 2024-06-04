@@ -42,6 +42,7 @@ void UEmojiWidget::SetEmojiTexture(UTexture* NewTexture, bool bCenter)
 		Brush.SetResourceObject(NewTexture);
 		EmojiImage->SetBrush(Brush);
 		// EmojiImage->SetBrushFromSoftTexture(NewTexture);
+		
 		EmojiImage->SetVisibility(ESlateVisibility::Visible); 
 		
 		UE_LOG(LogTemp, Warning, TEXT("SetEmojiMaterial: Successfully set texture %s"), *NewTexture->GetName());

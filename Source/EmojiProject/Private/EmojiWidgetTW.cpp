@@ -14,7 +14,7 @@ AEmojiWidgetTW::AEmojiWidgetTW()
 	WidgetComponent->SetupAttachment(RootComponent);
 	WidgetComponent->SetWidgetSpace(EWidgetSpace::World);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/KDJ/Widget/WBP_EmojiManagerWidget"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/KDJ/Widget/WBP_EmojiManagerWidget_C"));		// _C 붙여야 class 찾기. 이렇게 찾으면 경로 바뀌면 못 찾을 수도 있음  
 	if (WidgetClass.Succeeded())
 	{
 		EmojiManagerWidgetClass = WidgetClass.Class;
@@ -31,26 +31,47 @@ void AEmojiWidgetTW::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (EmojiManagerWidgetClass)
+	if (WidgetComponent)
 	{
-		EmojiManagerWidget = CreateWidget<UEmojiManagerWidget>(GetWorld(), EmojiManagerWidgetClass);
-		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget found and created"));
-		
+		WidgetComponent->SetWidgetClass(EmojiManagerWidgetClass);
+		WidgetComponent->SetDrawSize(FVector2D(500, 500));
+
+		// Directly assign widget to EmojiManagerWidget
+		EmojiManagerWidget = Cast<UEmojiManagerWidget>(WidgetComponent->GetUserWidgetObject());
 		if (EmojiManagerWidget)
 		{
-			WidgetComponent->SetWidget(EmojiManagerWidget);
-			WidgetComponent->SetDrawSize(FVector2D(500, 500));
 			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget successfully created and assigned to WidgetComponent"));
-		}	
+		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: Failed to create EmojiManagerWidget"));
+			UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: Failed to create or assign EmojiManagerWidget"));
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidgetClass is null"));
+		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: WidgetComponent not found"));
 	}
+
+	// if (EmojiManagerWidgetClass)
+	// {
+	// 	EmojiManagerWidget = CreateWidget<UEmojiManagerWidget>(GetWorld(), EmojiManagerWidgetClass);
+	// 	UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget found and created"));
+	// 	
+	// 	if (EmojiManagerWidget)
+	// 	{
+	// 		WidgetComponent->SetWidget(EmojiManagerWidget);
+	// 		WidgetComponent->SetDrawSize(FVector2D(500, 500));
+	// 		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidget successfully created and assigned to WidgetComponent"));
+	// 	}	
+	// 	else
+	// 	{
+	// 		UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: Failed to create EmojiManagerWidget"));
+	// 	}
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("EmojiWidgetTW::BeginPlay: EmojiManagerWidgetClass is null"));
+	// }
 }
 
 // Called every frame

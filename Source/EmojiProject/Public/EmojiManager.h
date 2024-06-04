@@ -102,6 +102,9 @@ private:
 	UPROPERTY()
 	class UEmojiGameInstance* GameInstance;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Meta = (AllowPrivateAccess), Category = "Emoji")
+	class UWidgetComponent* WidgetComponent;
+	
 	// Speeds		// Not using 
 	// UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	// float FloatSpeed = 400.f;

@@ -31,6 +31,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Emoji")
 	UWidgetComponent* WidgetComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Emoji")
+	UWidget* Widget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Emoji")
 	TSubclassOf<UEmojiManagerWidget> EmojiManagerWidgetClass;
