@@ -214,6 +214,14 @@ void AEmojiManager::ShowEmoji(bool bShowEmoji)
 {
 	bIsShown = bShowEmoji;
 
+	for (UEmojiWidget* Widget : EmojiArray)
+	{
+		if (Widget)
+		{
+			Widget->SetVisibility(bIsShown ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+		}
+	}
+
 	// for (this->EmojiWidget : EmojiArray)
 	// {
 	// 	if (EmojiWidget)
@@ -222,24 +230,24 @@ void AEmojiManager::ShowEmoji(bool bShowEmoji)
 	// 	}
 	// }
 
-	// Find EmojiManagerActor and get its WidgetComponent's UserWidget
-	UUserWidget* EmojiManagerWidget = nullptr;
-	for (TActorIterator<AEmojiWidgetTW> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-	{
-		AEmojiWidgetTW* EmojiWidgetTw = *ActorItr;
-		if (EmojiWidgetTw)
-		{
-			UWidgetComponent* WidgetComp = EmojiWidgetTw->WidgetComponent;
-			if (WidgetComp)
-			{
-				EmojiManagerWidget = WidgetComp->GetUserWidgetObject();
-				UE_LOG(LogTemp, Warning, TEXT("EmojiManagerWidget found in EmojiWidgetTW's WidgetComponent"))
-				break;				// Exit the loop if widget is found
-			}
-		}
-	}
-	
-	EmojiManagerWidget->SetVisibility(bIsShown ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	// // Find EmojiManagerActor and get its WidgetComponent's UserWidget
+	// UUserWidget* EmojiManagerWidget = nullptr;
+	// for (TActorIterator<AEmojiWidgetTW> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	// {
+	// 	AEmojiWidgetTW* EmojiWidgetTw = *ActorItr;
+	// 	if (EmojiWidgetTw)
+	// 	{
+	// 		UWidgetComponent* WidgetComp = EmojiWidgetTw->WidgetComponent;
+	// 		if (WidgetComp)
+	// 		{
+	// 			EmojiManagerWidget = WidgetComp->GetUserWidgetObject();
+	// 			UE_LOG(LogTemp, Warning, TEXT("EmojiManagerWidget found in EmojiWidgetTW's WidgetComponent"))
+	// 			break;				// Exit the loop if widget is found
+	// 		}
+	// 	}
+	// }
+	//
+	// EmojiManagerWidget->SetVisibility(bIsShown ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 
 const TArray<UEmojiWidget*>& AEmojiManager::GetEmojiArray() const
