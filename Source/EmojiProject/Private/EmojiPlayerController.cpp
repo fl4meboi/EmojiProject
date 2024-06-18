@@ -10,7 +10,7 @@ void AEmojiPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 	InputComponent->BindAction("IE_Spawn", IE_Pressed, this, &AEmojiPlayerController::SpawnEmoji);
 	InputComponent->BindAction("IE_CenterSpawn", IE_Pressed, this, &AEmojiPlayerController::CenterSpawnEmoji);
-	
+	// InputComponent->BindAction("IE_Hide", IE_Hide, this, &AEmojiPlayerController::Hide);
 }
 
 void AEmojiPlayerController::BeginPlay()
@@ -55,6 +55,13 @@ void AEmojiPlayerController::CenterSpawnEmoji()
 		UE_LOG(LogTemp, Warning, TEXT("EmojiPlayerController::SpawnEmoji: Emoji %s not found"), *EmojiName);
 	}
 }
+
+// void AEmojiPlayerController::Hide()
+// {
+// 	UE_LOG(LogTemp, Warning, TEXT("EmojiPlayerController::Hide"));
+//
+// 	EmojiManager->
+// }
 
 
 

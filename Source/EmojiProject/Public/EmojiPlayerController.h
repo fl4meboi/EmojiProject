@@ -28,6 +28,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void CenterSpawnEmoji();
 
+	// UFUNCTION(Blueprintable)
+	// void Hide();
+
 private:
 	AEmojiManager* EmojiManager;
 
