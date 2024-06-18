@@ -214,12 +214,20 @@ void AEmojiManager::ShowEmoji(bool bShowEmoji)
 {
 	bIsShown = bShowEmoji;
 
-	for (UEmojiWidget* Widget : EmojiArray)
+	// for (UEmojiWidget* Widget : EmojiArray)
+	// {
+	// 	if (Widget)
+	// 	{
+	// 		Widget->SetVisibility(bIsShown ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	// 	}
+	// }
+
+	UEmojiManagerWidget* EmojiManagerWidget = Cast<UEmojiManagerWidget>(WidgetComponent->GetUserWidgetObject());
+	if (EmojiManagerWidget)
 	{
-		if (Widget)
-		{
-			Widget->SetVisibility(bIsShown ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-		}
+		EmojiCanvas = EmojiManagerWidget->EmojiCanvas;
+		EmojiCanvas->SetVisibility(bIsShown ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+		UE_LOG(LogTemp, Warning, TEXT("ShowEmoji"));
 	}
 
 	// for (this->EmojiWidget : EmojiArray)
