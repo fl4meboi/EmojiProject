@@ -54,7 +54,11 @@ void AEmojiActor::Tick(float DeltaTime)
 	{
 		CurrentScale = FMath::VInterpTo(CurrentScale, TargetScale, DeltaTime, ScaleSpeed);
 		SetActorScale3D(CurrentScale);
+
+		UE_LOG(LogTemp, Warning, TEXT("EmojiActor: Emoji scale up"));
 	}
+
+
 }
 
 void AEmojiActor::SetEmojiSpeed()

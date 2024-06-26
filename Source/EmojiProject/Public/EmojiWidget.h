@@ -42,4 +42,6 @@ private:
 	UWidgetAnimation* SideAnimation;
 	UPROPERTY(Transient, Meta = (BindWidgetAnim))
 	UWidgetAnimation* CenterAnimation;
+	UPROPERTY(Transient, Meta = (BindWidgetAnim))
+	UWidgetAnimation* TestAnimation;
 };
