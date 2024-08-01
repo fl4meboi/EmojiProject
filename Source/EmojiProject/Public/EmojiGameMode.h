@@ -6,6 +6,16 @@
 #include "GameFramework/GameModeBase.h"
 #include "EmojiGameMode.generated.h"
 
+USTRUCT(BlueprintType)
+struct FPawnType
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<APawn> PawnClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector TargetLocation;
+};
 /**
  * 
  */
