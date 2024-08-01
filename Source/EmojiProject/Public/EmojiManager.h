@@ -54,6 +54,8 @@ public:
 	
 	const TArray<UEmojiWidget*>& GetEmojiArray() const;
 
+	void SetSpawnPoint(FVector2D NewLeftSpawnPoint, FVector2D NewRightSpawnPoint, FVector2D NewCenterSpawnPoint);
+
 protected:
 	// Called when the game starts or when spawned
 

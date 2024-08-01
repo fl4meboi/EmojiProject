@@ -262,3 +262,10 @@ const TArray<UEmojiWidget*>& AEmojiManager::GetEmojiArray() const
 {
 	return EmojiArray;
 }
+
+void AEmojiManager::SetSpawnPoint(FVector2D NewLeftSpawnPoint, FVector2D NewRightSpawnPoint, FVector2D NewCenterSpawnPoint)
+{
+	LeftSpawnPoint = NewLeftSpawnPoint;
+	RightSpawnPoint = NewRightSpawnPoint;
+	CenterSpawnPoint = NewCenterSpawnPoint;
+}
