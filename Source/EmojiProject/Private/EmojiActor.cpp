@@ -20,7 +20,7 @@ AEmojiActor::AEmojiActor()
 	CapsuleComponent->SetupAttachment(RootComponent);
 
 	CurrentScale = FVector(0.1f, 0.1f, 0.1f);
-	TargetScale = FVector(1.0f, 1.0f, 1.0f);
+	TargetScale = FVector(2.f, 2.f, 2.f);
 	ScaleSpeed = 2.f;
 
 	// Initial Scale

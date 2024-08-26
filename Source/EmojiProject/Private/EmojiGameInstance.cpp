@@ -294,5 +294,5 @@ void UEmojiGameInstance::ShowToastMessage(const FString& Message)
 void UEmojiGameInstance::InitFilePath()
 {
 	FilePath = FPlatformProcess::UserDir();
-	FilePath += TEXT("MRAG/Interactive/EmojiProject/");
+	FilePath += TEXT("MRAG/Interactive/Emoji/");
 }
